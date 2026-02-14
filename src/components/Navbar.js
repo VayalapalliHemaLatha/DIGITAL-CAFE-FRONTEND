@@ -9,7 +9,6 @@ function Navbar({ isLoggedIn }) {
   const roleType = (user?.roleType || '').toLowerCase();
   const isAdmin = roleType === 'admin';
   const isCafeOwner = roleType === 'cafeowner';
-  const showProfileDropdown = isAdmin || isCafeOwner;
 
   const [createModal, setCreateModal] = useState({ show: false, roleType: null, title: '' });
 
@@ -56,51 +55,45 @@ function Navbar({ isLoggedIn }) {
               </li>
               {isLoggedIn ? (
                 <li className="nav-item" id="profilesection">
-                  {showProfileDropdown ? (
-                    <div className="dropdown">
-                      <button
-                        type="button"
-                        className="nav-link py-0 d-flex align-items-center dropdown-toggle border-0 bg-transparent text-inherit"
-                        id="profileDropdown"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        <i className="fas fa-user me-2 text-primary"></i>
-                        {user?.name ?? user?.email ?? 'User'}
-                      </button>
-                      <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="profileDropdown">
-                        <li><Link to="/account" className="dropdown-item">Account</Link></li>
-                        {isAdmin && (
-                          <li>
-                            <button type="button" className="dropdown-item" onClick={() => openCreateModal('cafeowner', 'Create Cafe Owner')}>
-                              Create Cafe Owner
-                            </button>
-                          </li>
-                        )}
-                        {isCafeOwner && (
-                          <>
-                            <li><hr className="dropdown-divider" /></li>
-                            <li><span className="dropdown-item-text small text-muted">Create staff</span></li>
-                            <li>
-                              <button type="button" className="dropdown-item" onClick={() => openCreateModal('chef', 'Create Chef')}>
-                                Create Chef
-                              </button>
-                            </li>
-                            <li>
-                              <button type="button" className="dropdown-item" onClick={() => openCreateModal('waiter', 'Create Waiter')}>
-                                Create Waiter
-                              </button>
-                            </li>
-                          </>
-                        )}
-                      </ul>
-                    </div>
-                  ) : (
-                    <Link to="/account" className="nav-link py-0 d-flex align-items-center">
+                  <div className="dropdown">
+                    <button
+                      type="button"
+                      className="nav-link py-0 d-flex align-items-center dropdown-toggle border-0 bg-transparent text-inherit"
+                      id="profileDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
                       <i className="fas fa-user me-2 text-primary"></i>
                       {user?.name ?? user?.email ?? 'User'}
-                    </Link>
-                  )}
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="profileDropdown">
+                      <li><Link to="/account" className="dropdown-item">Account</Link></li>
+                      <li><Link to="/profile" className="dropdown-item">Update Profile</Link></li>
+                      {isAdmin && (
+                        <li>
+                          <button type="button" className="dropdown-item" onClick={() => openCreateModal('cafeowner', 'Create Cafe Owner')}>
+                            Create Cafe Owner
+                          </button>
+                        </li>
+                      )}
+                      {isCafeOwner && (
+                        <>
+                          <li><hr className="dropdown-divider" /></li>
+                          <li><span className="dropdown-item-text small text-muted">Create staff</span></li>
+                          <li>
+                            <button type="button" className="dropdown-item" onClick={() => openCreateModal('chef', 'Create Chef')}>
+                              Create Chef
+                            </button>
+                          </li>
+                          <li>
+                            <button type="button" className="dropdown-item" onClick={() => openCreateModal('waiter', 'Create Waiter')}>
+                              Create Waiter
+                            </button>
+                          </li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
                 </li>
               ) : (
                 <li className="nav-item">

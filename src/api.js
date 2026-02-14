@@ -80,4 +80,14 @@ export async function getUsers() {
   return data;
 }
 
+export async function getProfile() {
+  const { data } = await api.get('/api/users/profile');
+  return data;
+}
+
+export async function updateProfile(payload) {
+  const { data } = await api.put('/api/users/profile', payload);
+  return data;
+}
+
 export default api;

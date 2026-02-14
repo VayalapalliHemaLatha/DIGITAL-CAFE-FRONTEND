@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AccountPage from './pages/AccountPage';
+import ProfilePage from './pages/ProfilePage';
 import { authApi } from './api';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/login" element={<LoginPage onAuthChange={onAuthChange} />} />
           <Route path="/register" element={<RegisterPage onAuthChange={onAuthChange} />} />
           <Route path="/account" element={<AccountPage onAuthChange={onAuthChange} />} />
+          <Route path="/profile" element={<ProfilePage onAuthChange={onAuthChange} />} />
         </Routes>
       </main>
       <Footer />
