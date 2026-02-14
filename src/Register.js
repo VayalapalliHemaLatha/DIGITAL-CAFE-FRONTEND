@@ -8,6 +8,8 @@ const Register = ({ onAuthChange }) => {
         name: '',
         email: '',
         password: '',
+        phone: '',
+        address: '',
     });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -27,9 +29,12 @@ const Register = ({ onAuthChange }) => {
                 email: user.email,
                 password: user.password,
                 name: user.name,
+                phone: user.phone || undefined,
+                address: user.address || undefined,
             });
-            setSuccess(`Account created! Welcome, ${data.user?.name ?? user.name}. You are logged in.`);
-            setUser({ name: '', email: '', password: '' });
+            const displayName = data.name ?? data.user?.name ?? user.name;
+            setSuccess(`Account created! Welcome, ${displayName}. You are logged in.`);
+            setUser({ name: '', email: '', password: '', phone: '', address: '' });
             onAuthChange?.();
             navigate('/');
         } catch (err) {
@@ -78,6 +83,28 @@ const Register = ({ onAuthChange }) => {
                         value={user.password}
                         onChange={handleChange}
                         required
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Phone</label>
+                    <input
+                        type="tel"
+                        name="phone"
+                        className="form-control"
+                        placeholder="+1-555-0100"
+                        value={user.phone}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Address</label>
+                    <input
+                        type="text"
+                        name="address"
+                        className="form-control"
+                        placeholder="123 Main St"
+                        value={user.address}
+                        onChange={handleChange}
                     />
                 </div>
                 {error && <div className="alert alert-danger py-2 small">{error}</div>}

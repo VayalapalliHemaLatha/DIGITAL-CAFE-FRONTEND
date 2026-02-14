@@ -35,14 +35,17 @@ export const authApi = {
     return !!getToken();
   },
 
-  async signup({ email, password, name }) {
+  async signup({ email, password, name, phone, address }) {
     const { data } = await axios.post(`${API_BASE_URL}/api/auth/signup`, {
       email,
       password,
       name,
+      ...(phone != null && phone !== '' && { phone }),
+      ...(address != null && address !== '' && { address }),
     });
     if (data.token) setToken(data.token);
-    if (data.user) setUser(data.user);
+    const userObj = data.user ?? { id: data.id, email: data.email, name: data.name, roleType: data.roleType };
+    if (userObj && (userObj.id != null || userObj.email)) setUser(userObj);
     return data;
   },
 
@@ -52,7 +55,13 @@ export const authApi = {
       password,
     });
     if (data.token) setToken(data.token);
-    if (data.user) setUser(data.user);
+    const userObj = data.user ?? { id: data.id, email: data.email, name: data.name, roleType: data.roleType };
+    if (userObj && (userObj.id != null || userObj.email)) setUser(userObj);
+    return data;
+  },
+
+  async createUser(payload) {
+    const { data } = await api.post('/api/auth/signup', payload);
     return data;
   },
 };

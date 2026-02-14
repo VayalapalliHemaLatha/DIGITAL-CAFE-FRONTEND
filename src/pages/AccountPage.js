@@ -49,6 +49,9 @@ function AccountPage({ onAuthChange }) {
                     <h2 className="section-title mb-2">You are signed in</h2>
                     <p className="text-muted mb-0">
                       Logged in as <strong className="text-dark">{user?.name ?? user?.email ?? 'User'}</strong>
+                      {user?.roleType && (
+                        <span className="text-muted"> ({user.roleType})</span>
+                      )}
                     </p>
                     {user?.email && user?.name && (
                       <p className="text-muted small mt-1">{user.email}</p>

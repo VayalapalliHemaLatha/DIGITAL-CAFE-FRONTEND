@@ -23,7 +23,7 @@ const Login = ({ onAuthChange }) => {
         setSuccess('');
         try {
             const data = await authApi.login({ email, password });
-            setSuccess(`Welcome back, ${data.user?.name ?? data.user?.email ?? email}.`);
+            setSuccess(`Welcome back, ${data.name ?? data.user?.name ?? data.email ?? email}.`);
             setEmail('');
             setPassword('');
             onAuthChange?.();
