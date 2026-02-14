@@ -49,6 +49,12 @@ function CafeOwnerStaffPage({ onAuthChange }) {
     fetchData();
   }, [isCafeOwner, navigate, fetchData]);
 
+  useEffect(() => {
+    const onRefresh = () => fetchData();
+    window.addEventListener('cafeowner-staff-refresh', onRefresh);
+    return () => window.removeEventListener('cafeowner-staff-refresh', onRefresh);
+  }, [fetchData]);
+
   if (!isCafeOwner) return null;
 
   const StaffTable = ({ title, list, emptyMessage }) => (

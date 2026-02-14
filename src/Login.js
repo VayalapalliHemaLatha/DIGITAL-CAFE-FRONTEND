@@ -32,8 +32,12 @@ const Login = ({ onAuthChange }) => {
               navigate('/admin/cafeowners');
             } else if (role === 'cafeowner') {
               navigate('/cafeowner/staff');
+            } else if (role === 'chef') {
+              navigate('/chef/orders');
+            } else if (role === 'waiter') {
+              navigate('/waiter/orders');
             } else {
-              navigate('/');
+              navigate('/cafes');
             }
         } catch (err) {
             const msg = err.response?.data?.message || err.response?.data?.error || err.message || 'Login failed.';

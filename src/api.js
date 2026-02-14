@@ -90,6 +90,22 @@ export async function updateProfile(payload) {
   return data;
 }
 
+export async function getAdminCafes() {
+  const { data } = await api.get('/api/admin/cafes');
+  return data;
+}
+export async function createAdminCafe(payload) {
+  const { data } = await api.post('/api/admin/cafes', payload);
+  return data;
+}
+export async function updateAdminCafe(id, payload) {
+  const { data } = await api.put(`/api/admin/cafes/${id}`, payload);
+  return data;
+}
+export async function deleteAdminCafe(id) {
+  await api.delete(`/api/admin/cafes/${id}`);
+}
+
 export async function getCafeOwners() {
   const { data } = await api.get('/api/admin/cafeowners');
   return data;
@@ -107,6 +123,111 @@ export async function getCafeOwnerWaiters() {
 
 export async function getCafeOwnerChefs() {
   const { data } = await api.get('/api/cafeowners/chefs');
+  return data;
+}
+
+// Menu (cafe owner)
+export async function getCafeOwnerMenu() {
+  const { data } = await api.get('/api/cafeowners/menu');
+  return data;
+}
+export async function addCafeOwnerMenuItem(payload) {
+  const { data } = await api.post('/api/cafeowners/menu', payload);
+  return data;
+}
+export async function updateCafeOwnerMenuItem(id, payload) {
+  const { data } = await api.put(`/api/cafeowners/menu/${id}`, payload);
+  return data;
+}
+export async function deleteCafeOwnerMenuItem(id) {
+  await api.delete(`/api/cafeowners/menu/${id}`);
+}
+
+// Tables (cafe owner)
+export async function getCafeOwnerTables() {
+  const { data } = await api.get('/api/cafeowners/tables');
+  return data;
+}
+export async function addCafeOwnerTable(payload) {
+  const { data } = await api.post('/api/cafeowners/tables', payload);
+  return data;
+}
+export async function updateCafeOwnerTable(id, payload) {
+  const { data } = await api.put(`/api/cafeowners/tables/${id}`, payload);
+  return data;
+}
+export async function updateCafeOwnerTableStatus(id, payload) {
+  const { data } = await api.patch(`/api/cafeowners/tables/${id}/status`, payload);
+  return data;
+}
+export async function deleteCafeOwnerTable(id) {
+  await api.delete(`/api/cafeowners/tables/${id}`);
+}
+
+export async function getCafeOwnerBookings() {
+  const { data } = await api.get('/api/cafeowners/bookings');
+  return data;
+}
+export async function getCafeOwnerOrders() {
+  const { data } = await api.get('/api/cafeowners/orders');
+  return data;
+}
+export async function getCafeOwnerOrderById(id) {
+  const { data } = await api.get(`/api/cafeowners/orders/${id}`);
+  return data;
+}
+
+// Customer / any authenticated user
+export async function getCafes() {
+  const { data } = await api.get('/api/cafes');
+  return data;
+}
+export async function getCafeById(id) {
+  const { data } = await api.get(`/api/cafes/${id}`);
+  return data;
+}
+export async function createBooking(payload) {
+  const { data } = await api.post('/api/bookings', payload);
+  return data;
+}
+export async function getBookings() {
+  const { data } = await api.get('/api/bookings');
+  return data;
+}
+export async function createOrder(payload) {
+  const { data } = await api.post('/api/orders', payload);
+  return data;
+}
+export async function getOrders() {
+  const { data } = await api.get('/api/orders');
+  return data;
+}
+export async function getOrderById(id) {
+  const { data } = await api.get(`/api/orders/${id}`);
+  return data;
+}
+
+// Chef
+export async function getChefOrders() {
+  const { data } = await api.get('/api/chef/orders');
+  return data;
+}
+export async function updateChefOrderStatus(id, payload) {
+  const { data } = await api.patch(`/api/chef/orders/${id}/status`, payload);
+  return data;
+}
+
+// Waiter
+export async function getWaiterOrdersReady() {
+  const { data } = await api.get('/api/waiter/orders/ready');
+  return data;
+}
+export async function getWaiterOrders() {
+  const { data } = await api.get('/api/waiter/orders');
+  return data;
+}
+export async function updateWaiterOrderStatus(id, payload) {
+  const { data } = await api.patch(`/api/waiter/orders/${id}/status`, payload);
   return data;
 }
 

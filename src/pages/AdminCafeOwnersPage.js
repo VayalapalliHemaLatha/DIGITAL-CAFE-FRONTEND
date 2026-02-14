@@ -46,6 +46,12 @@ function AdminCafeOwnersPage({ onAuthChange }) {
     fetchList();
   }, [isAdmin, navigate, fetchList]);
 
+  useEffect(() => {
+    const onRefresh = () => fetchList();
+    window.addEventListener('admin-cafeowners-refresh', onRefresh);
+    return () => window.removeEventListener('admin-cafeowners-refresh', onRefresh);
+  }, [fetchList]);
+
   const handleToggleStatus = async (owner) => {
     const newActive = !owner.active;
     setTogglingId(owner.id);
@@ -100,6 +106,7 @@ function AdminCafeOwnersPage({ onAuthChange }) {
                       <tr>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Cafe</th>
                         <th>Phone</th>
                         <th>Address</th>
                         <th>Status</th>
@@ -111,6 +118,7 @@ function AdminCafeOwnersPage({ onAuthChange }) {
                         <tr key={owner.id}>
                           <td className="fw-medium">{owner.name || '—'}</td>
                           <td>{owner.email || '—'}</td>
+                          <td>{owner.cafeName || (owner.cafeId != null ? `ID ${owner.cafeId}` : '—')}</td>
                           <td>{owner.phone || '—'}</td>
                           <td className="text-muted small" style={{ maxWidth: 200 }}>{owner.address || '—'}</td>
                           <td>

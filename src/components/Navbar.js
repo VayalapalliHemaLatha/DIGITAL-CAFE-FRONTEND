@@ -9,6 +9,9 @@ function Navbar({ isLoggedIn }) {
   const roleType = (user?.roleType || '').toLowerCase();
   const isAdmin = roleType === 'admin';
   const isCafeOwner = roleType === 'cafeowner';
+  const isChef = roleType === 'chef';
+  const isWaiter = roleType === 'waiter';
+  const isCustomer = !isAdmin && !isCafeOwner && !isChef && !isWaiter;
 
   const [createModal, setCreateModal] = useState({ show: false, roleType: null, title: '' });
 
@@ -71,6 +74,7 @@ function Navbar({ isLoggedIn }) {
                       <li><Link to="/profile" className="dropdown-item">Update Profile</Link></li>
                       {isAdmin && (
                         <>
+                          <li><Link to="/admin/cafes" className="dropdown-item">Cafes</Link></li>
                           <li><Link to="/admin/cafeowners" className="dropdown-item">Cafe Owners</Link></li>
                           <li>
                             <button type="button" className="dropdown-item" onClick={() => openCreateModal('cafeowner', 'Create Cafe Owner')}>
@@ -82,6 +86,10 @@ function Navbar({ isLoggedIn }) {
                       {isCafeOwner && (
                         <>
                           <li><Link to="/cafeowner/staff" className="dropdown-item">Staff</Link></li>
+                          <li><Link to="/cafeowner/menu" className="dropdown-item">Menu</Link></li>
+                          <li><Link to="/cafeowner/tables" className="dropdown-item">Tables</Link></li>
+                          <li><Link to="/cafeowner/bookings" className="dropdown-item">Bookings</Link></li>
+                          <li><Link to="/cafeowner/orders" className="dropdown-item">Orders</Link></li>
                           <li><hr className="dropdown-divider" /></li>
                           <li><span className="dropdown-item-text small text-muted">Create staff</span></li>
                           <li>
@@ -95,6 +103,19 @@ function Navbar({ isLoggedIn }) {
                             </button>
                           </li>
                         </>
+                      )}
+                      {isCustomer && (
+                        <>
+                          <li><Link to="/cafes" className="dropdown-item">Cafes</Link></li>
+                          <li><Link to="/bookings" className="dropdown-item">My Bookings</Link></li>
+                          <li><Link to="/orders" className="dropdown-item">My Orders</Link></li>
+                        </>
+                      )}
+                      {isChef && (
+                        <li><Link to="/chef/orders" className="dropdown-item">Orders</Link></li>
+                      )}
+                      {isWaiter && (
+                        <li><Link to="/waiter/orders" className="dropdown-item">Orders</Link></li>
                       )}
                     </ul>
                   </div>
