@@ -90,4 +90,24 @@ export async function updateProfile(payload) {
   return data;
 }
 
+export async function getCafeOwners() {
+  const { data } = await api.get('/api/admin/cafeowners');
+  return data;
+}
+
+export async function updateCafeOwnerStatus(id, payload) {
+  const { data } = await api.patch(`/api/admin/cafeowners/${id}/status`, payload);
+  return data;
+}
+
+export async function getCafeOwnerWaiters() {
+  const { data } = await api.get('/api/cafeowners/waiters');
+  return data;
+}
+
+export async function getCafeOwnerChefs() {
+  const { data } = await api.get('/api/cafeowners/chefs');
+  return data;
+}
+
 export default api;

@@ -70,14 +70,18 @@ function Navbar({ isLoggedIn }) {
                       <li><Link to="/account" className="dropdown-item">Account</Link></li>
                       <li><Link to="/profile" className="dropdown-item">Update Profile</Link></li>
                       {isAdmin && (
-                        <li>
-                          <button type="button" className="dropdown-item" onClick={() => openCreateModal('cafeowner', 'Create Cafe Owner')}>
-                            Create Cafe Owner
-                          </button>
-                        </li>
+                        <>
+                          <li><Link to="/admin/cafeowners" className="dropdown-item">Cafe Owners</Link></li>
+                          <li>
+                            <button type="button" className="dropdown-item" onClick={() => openCreateModal('cafeowner', 'Create Cafe Owner')}>
+                              Create Cafe Owner
+                            </button>
+                          </li>
+                        </>
                       )}
                       {isCafeOwner && (
                         <>
+                          <li><Link to="/cafeowner/staff" className="dropdown-item">Staff</Link></li>
                           <li><hr className="dropdown-divider" /></li>
                           <li><span className="dropdown-item-text small text-muted">Create staff</span></li>
                           <li>

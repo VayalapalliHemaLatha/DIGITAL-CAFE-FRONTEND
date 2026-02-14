@@ -27,7 +27,14 @@ const Login = ({ onAuthChange }) => {
             setEmail('');
             setPassword('');
             onAuthChange?.();
-            navigate('/');
+            const role = (data.roleType || data.user?.roleType || '').toLowerCase();
+            if (role === 'admin') {
+              navigate('/admin/cafeowners');
+            } else if (role === 'cafeowner') {
+              navigate('/cafeowner/staff');
+            } else {
+              navigate('/');
+            }
         } catch (err) {
             const msg = err.response?.data?.message || err.response?.data?.error || err.message || 'Login failed.';
             setError(msg);
