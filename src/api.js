@@ -106,6 +106,23 @@ export async function deleteAdminCafe(id) {
   await api.delete(`/api/admin/cafes/${id}`);
 }
 
+export async function getAdminDashboardSummary(params = {}) {
+  const { data } = await api.get('/api/admin/dashboard/summary', { params });
+  return data;
+}
+export async function getAdminDashboardCafeLocations() {
+  const { data } = await api.get('/api/admin/dashboard/cafe-locations');
+  return data;
+}
+export async function getAdminDashboardDailyStats(params = {}) {
+  const { data } = await api.get('/api/admin/dashboard/daily-stats', { params });
+  return data;
+}
+export async function getAdminDashboardMonthlyStats(params = {}) {
+  const { data } = await api.get('/api/admin/dashboard/monthly-stats', { params });
+  return data;
+}
+
 export async function getCafeOwners() {
   const { data } = await api.get('/api/admin/cafeowners');
   return data;

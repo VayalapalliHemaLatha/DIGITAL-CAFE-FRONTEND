@@ -4,9 +4,15 @@ import { getProfile, updateProfile } from '../api';
 import { authApi } from '../api';
 
 const PAGE_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920';
+const emptyAcademic = () => ({ degree: '', institution: '', completionYear: '' });
+const emptyWork = () => ({ company: '', role: '', duration: '', description: '' });
 
 function ProfilePage({ onAuthChange }) {
   const navigate = useNavigate();
+  const user = authApi.getUser();
+  const roleType = (user?.roleType || '').toLowerCase();
+  const isCustomer = roleType === 'customer';
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -22,6 +28,8 @@ function ProfilePage({ onAuthChange }) {
     plotNo: '',
     city: '',
     pincode: '',
+    academicInformation: [emptyAcademic()],
+    workExperience: [emptyWork()],
   });
 
   const handleAuthFailure = useCallback(() => {
@@ -38,7 +46,7 @@ function ProfilePage({ onAuthChange }) {
     getProfile()
       .then((data) => {
         if (cancelled) return;
-        setForm({
+        const base = {
           firstName: data.firstName ?? '',
           lastName: data.lastName ?? '',
           dob: data.dob ?? '',
@@ -49,7 +57,27 @@ function ProfilePage({ onAuthChange }) {
           plotNo: data.plotNo ?? '',
           city: data.city ?? '',
           pincode: data.pincode ?? '',
-        });
+        };
+        if (Array.isArray(data.academicInformation) && data.academicInformation.length > 0) {
+          base.academicInformation = data.academicInformation.map((a) => ({
+            degree: a.degree ?? '',
+            institution: a.institution ?? '',
+            completionYear: a.completionYear ?? '',
+          }));
+        } else {
+          base.academicInformation = [emptyAcademic()];
+        }
+        if (Array.isArray(data.workExperience) && data.workExperience.length > 0) {
+          base.workExperience = data.workExperience.map((w) => ({
+            company: w.company ?? '',
+            role: w.role ?? '',
+            duration: w.duration ?? '',
+            description: w.description ?? '',
+          }));
+        } else {
+          base.workExperience = [emptyWork()];
+        }
+        setForm(base);
       })
       .catch((err) => {
         if (cancelled) return;
@@ -71,6 +99,49 @@ function ProfilePage({ onAuthChange }) {
     setSuccess('');
   };
 
+  const updateAcademic = (index, field, value) => {
+    setForm((prev) => {
+      const arr = [...(prev.academicInformation || [])];
+      arr[index] = { ...arr[index], [field]: value };
+      return { ...prev, academicInformation: arr };
+    });
+    setError('');
+    setSuccess('');
+  };
+  const addAcademic = () => {
+    setForm((prev) => ({
+      ...prev,
+      academicInformation: [...(prev.academicInformation || []), emptyAcademic()],
+    }));
+  };
+  const removeAcademic = (index) => {
+    setForm((prev) => {
+      const arr = (prev.academicInformation || []).filter((_, i) => i !== index);
+      return { ...prev, academicInformation: arr.length ? arr : [emptyAcademic()] };
+    });
+  };
+  const updateWork = (index, field, value) => {
+    setForm((prev) => {
+      const arr = [...(prev.workExperience || [])];
+      arr[index] = { ...arr[index], [field]: value };
+      return { ...prev, workExperience: arr };
+    });
+    setError('');
+    setSuccess('');
+  };
+  const addWork = () => {
+    setForm((prev) => ({
+      ...prev,
+      workExperience: [...(prev.workExperience || []), emptyWork()],
+    }));
+  };
+  const removeWork = (index) => {
+    setForm((prev) => {
+      const arr = (prev.workExperience || []).filter((_, i) => i !== index);
+      return { ...prev, workExperience: arr.length ? arr : [emptyWork()] };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -89,6 +160,14 @@ function ProfilePage({ onAuthChange }) {
         city: form.city || undefined,
         pincode: form.pincode || undefined,
       };
+      if (isCustomer) {
+        payload.academicInformation = (form.academicInformation || [])
+          .filter((a) => a.degree || a.institution || a.completionYear)
+          .map((a) => ({ degree: a.degree, institution: a.institution, completionYear: a.completionYear }));
+        payload.workExperience = (form.workExperience || [])
+          .filter((w) => w.company || w.role || w.duration || w.description)
+          .map((w) => ({ company: w.company, role: w.role, duration: w.duration, description: w.description }));
+      }
       const data = await updateProfile(payload);
       if (data && (data.name != null || data.email != null)) {
         authApi.setUser({
@@ -263,6 +342,105 @@ function ProfilePage({ onAuthChange }) {
                     />
                   </div>
                 </div>
+
+                {isCustomer && (
+                  <>
+                    <hr className="my-4" />
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <h6 className="mb-0">Academic information <span className="text-muted small">(optional)</span></h6>
+                      <button type="button" className="btn btn-sm btn-outline-primary" onClick={addAcademic}>Add</button>
+                    </div>
+                    {(form.academicInformation || []).map((a, i) => (
+                      <div key={i} className="card mb-2">
+                        <div className="card-body py-2">
+                          <div className="row g-2">
+                            <div className="col-md-4">
+                              <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder="Degree"
+                                value={a.degree}
+                                onChange={(e) => updateAcademic(i, 'degree', e.target.value)}
+                              />
+                            </div>
+                            <div className="col-md-4">
+                              <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder="Institution"
+                                value={a.institution}
+                                onChange={(e) => updateAcademic(i, 'institution', e.target.value)}
+                              />
+                            </div>
+                            <div className="col-md-3">
+                              <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder="Year"
+                                value={a.completionYear}
+                                onChange={(e) => updateAcademic(i, 'completionYear', e.target.value)}
+                              />
+                            </div>
+                            <div className="col-md-1">
+                              <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => removeAcademic(i)} title="Remove">×</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    <hr className="my-4" />
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <h6 className="mb-0">Work experience <span className="text-muted small">(optional)</span></h6>
+                      <button type="button" className="btn btn-sm btn-outline-primary" onClick={addWork}>Add</button>
+                    </div>
+                    {(form.workExperience || []).map((w, i) => (
+                      <div key={i} className="card mb-2">
+                        <div className="card-body py-2">
+                          <div className="row g-2 mb-2">
+                            <div className="col-md-3">
+                              <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder="Company"
+                                value={w.company}
+                                onChange={(e) => updateWork(i, 'company', e.target.value)}
+                              />
+                            </div>
+                            <div className="col-md-3">
+                              <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder="Role"
+                                value={w.role}
+                                onChange={(e) => updateWork(i, 'role', e.target.value)}
+                              />
+                            </div>
+                            <div className="col-md-3">
+                              <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder="Duration"
+                                value={w.duration}
+                                onChange={(e) => updateWork(i, 'duration', e.target.value)}
+                              />
+                            </div>
+                            <div className="col-md-2">
+                              <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => removeWork(i)} title="Remove">×</button>
+                            </div>
+                          </div>
+                          <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            placeholder="Description"
+                            value={w.description}
+                            onChange={(e) => updateWork(i, 'description', e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
 
                 {error && <div className="alert alert-danger py-2 small mt-3">{error}</div>}
                 {success && <div className="alert alert-success py-2 small mt-3">{success}</div>}

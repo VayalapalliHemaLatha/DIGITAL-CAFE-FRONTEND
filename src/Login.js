@@ -29,7 +29,7 @@ const Login = ({ onAuthChange }) => {
             onAuthChange?.();
             const role = (data.roleType || data.user?.roleType || '').toLowerCase();
             if (role === 'admin') {
-              navigate('/admin/cafeowners');
+              navigate('/admin/dashboard');
             } else if (role === 'cafeowner') {
               navigate('/cafeowner/staff');
             } else if (role === 'chef') {

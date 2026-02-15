@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { authApi } from './api';
 
 const Register = ({ onAuthChange }) => {
@@ -42,6 +42,26 @@ const Register = ({ onAuthChange }) => {
             setError(msg);
         }
     };
+
+    if (authApi.isLoggedIn()) {
+        return (
+            <>
+                <div className="section-label">Create Account</div>
+                <h3 className="section-title mb-4">Register</h3>
+                <div className="text-center py-4">
+                    <p className="text-success mb-3">
+                        <i className="fas fa-check-circle me-2"></i>
+                        You are already signed in as <strong>{authApi.getUser()?.name ?? authApi.getUser()?.email ?? 'User'}</strong>
+                    </p>
+                    <p className="text-muted small mb-3">No need to sign up again.</p>
+                    <Link to="/account" className="btn btn-primary me-2">
+                        <i className="fas fa-user me-2"></i> Account
+                    </Link>
+                    <Link to="/cafes" className="btn btn-outline-primary">Browse Cafes</Link>
+                </div>
+            </>
+        );
+    }
 
     return (
         <>
