@@ -64,6 +64,14 @@ export const authApi = {
     const { data } = await api.post('/api/auth/signup', payload);
     return data;
   },
+
+  async forgotPassword({ email, newPassword }) {
+    const { data } = await axios.post(`${API_BASE_URL}/api/auth/forgot-password`, {
+      email,
+      newPassword,
+    });
+    return data;
+  },
 };
 
 export const api = axios.create({

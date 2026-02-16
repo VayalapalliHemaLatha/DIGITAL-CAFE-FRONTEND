@@ -86,6 +86,9 @@ const Login = ({ onAuthChange }) => {
                             onChange={handleChange}
                             required
                         />
+                        <div className="text-end mt-1">
+                            <Link to="/forgot-password" className="small text-primary">Forgot password?</Link>
+                        </div>
                     </div>
                     {error && <div className="alert alert-danger py-2 small">{error}</div>}
                     {success && <div className="alert alert-success py-2 small">{success}</div>}

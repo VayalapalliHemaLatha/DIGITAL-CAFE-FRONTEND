@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import RegisterPage from './pages/RegisterPage';
 import AccountPage from './pages/AccountPage';
 import ProfilePage from './pages/ProfilePage';
@@ -39,6 +40,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} />
           <Route path="/login" element={<LoginPage onAuthChange={onAuthChange} />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/register" element={<RegisterPage onAuthChange={onAuthChange} />} />
           <Route path="/account" element={<AccountPage onAuthChange={onAuthChange} />} />
           <Route path="/profile" element={<ProfilePage onAuthChange={onAuthChange} />} />
