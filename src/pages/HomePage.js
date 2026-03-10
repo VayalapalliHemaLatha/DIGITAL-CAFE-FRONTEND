@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import UserList from '../UserList';
+import { authApi } from '../api';
 
 const HERO_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920';
 const ABOUT_BG = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800';
@@ -13,6 +14,9 @@ const services = [
 ];
 
 function HomePage({ isLoggedIn }) {
+  const user = authApi.getUser();
+  const roleType = (user?.roleType || '').toLowerCase();
+  const isAdmin = roleType === 'admin';
   return (
     <>
       {/* Hero - Enjoy Our Delicious Meal */}
@@ -95,8 +99,8 @@ function HomePage({ isLoggedIn }) {
         </div>
       </div>
 
-      {/* User List - only when logged in */}
-      {isLoggedIn && (
+      {/* User List - admin only (legacy; prefer Admin Dashboard & Cafe Owners) */}
+      {isLoggedIn && isAdmin && (
         <div className="container py-5">
           <div className="text-center mb-4">
             <div className="section-label">Admin</div>
