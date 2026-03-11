@@ -1,0 +1,49 @@
+/* Admin Logs page */
+
+.admin-logs-toolbar {
+  margin-bottom: 0;
+}
+
+.admin-logs-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.admin-logs-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-logs-table {
+  font-size: 0.875rem;
+}
+
+.admin-logs-table th {
+  font-weight: 600;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.admin-log-ts {
+  white-space: nowrap;
+  color: #6b7280;
+}
+
+.admin-log-msg {
+  max-width: 400px;
+  word-break: break-word;
+}
+
+.log-level-info { background: #dbeafe; color: #1e40af; }
+.log-level-warn { background: #fef3c7; color: #b45309; }
+.log-level-error { background: #fee2e2; color: #dc2626; }
+
+.admin-logs-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}

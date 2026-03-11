@@ -8,9 +8,10 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  LineChart,
-  Line,
   Legend,
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts';
 import { authApi } from '../api';
 import {
@@ -18,6 +19,8 @@ import {
   getAdminDashboardCafeLocations,
   getAdminDashboardDailyStats,
 } from '../api';
+import AdminSidebar from '../components/AdminSidebar';
+import '../styles/AdminDashboard.css';
 
 const getDefaultDateRange = () => {
   const end = new Date();
@@ -28,6 +31,14 @@ const getDefaultDateRange = () => {
     endDate: end.toISOString().slice(0, 10),
   };
 };
+
+const ROLES = [
+  { name: 'ADMIN', color: '#6B46C1' },
+  { name: 'CAFE OWNER', color: '#dc2626' },
+  { name: 'CHEF', color: '#059669' },
+  { name: 'WAITER', color: '#2563eb' },
+  { name: 'CUSTOMER', color: '#ea580c' },
+];
 
 function AdminDashboardPage({ onAuthChange }) {
   const navigate = useNavigate();
@@ -87,198 +98,342 @@ function AdminDashboardPage({ onAuthChange }) {
   const placed = ordersByStatus.placed ?? 0;
   const preparing = ordersByStatus.preparing ?? 0;
   const ready = ordersByStatus.ready ?? 0;
+  const pending = placed + preparing + ready;
+  const totalCustomers = summary?.totalCustomers ?? 0;
+  const totalCafes = summary?.totalCafes ?? 0;
+  const totalSales = summary?.totalSales != null ? Number(summary.totalSales).toFixed(2) : '0.00';
+
+  // Weekly growth: use last 7 days from dailyStats for bar chart (Users, Orders, Bookings)
+  const weeklyData = (dailyStats.dailyStats || []).slice(-7).map((d) => ({
+    date: d.date ? d.date.slice(5) : d.date,
+    fullDate: d.date,
+    orderCount: d.orderCount ?? 0,
+    sales: d.sales ?? 0,
+    bookings: d.bookings ?? 0,
+    users: d.users ?? 0,
+  }));
+
+  // User distribution: use API if available, else allocate totalCustomers to CUSTOMER for display
+  const userDistribution = summary?.userDistribution
+    ? ROLES.map((r) => ({
+        name: r.name,
+        value: summary.userDistribution[r.name.toLowerCase().replace(/\s/g, '')] ?? 0,
+      }))
+    : ROLES.map((r) => ({
+        name: r.name,
+        value: r.name === 'CUSTOMER' ? totalCustomers : 0,
+      }));
+
+  // Recent activities: placeholder (API may not provide)
+  const recentActivities = summary?.recentActivities ?? [];
 
   if (!isAdmin) return null;
 
   return (
-    <div className="admin-dashboard" style={{ minHeight: '100vh', background: '#1a1d29', color: '#e4e6eb' }}>
-      <div className="container-fluid py-4">
-        <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-          <div>
-            <nav className="mb-1">
-              <ol className="breadcrumb mb-0" style={{ background: 'transparent' }}>
-                <li className="breadcrumb-item"><Link to="/" className="text-decoration-none" style={{ color: '#20c997' }}>Home</Link></li>
-                <li className="breadcrumb-item text-white-50 active">Dashboard</li>
-              </ol>
-            </nav>
-            <h1 className="h4 mb-0 fw-bold text-white">Dashboard</h1>
+    <div className="admin-layout">
+      <AdminSidebar />
+
+      {/* Main content */}
+      <div className="admin-main">
+        <header className="admin-header">
+          <div className="admin-header-left">
+            <button type="button" className="admin-header-icon" aria-label="Menu">
+              <i className="fas fa-bars"></i>
+            </button>
+            <h1 className="admin-header-title">Admin Dashboard</h1>
           </div>
-          <div className="d-flex align-items-center gap-2">
-            <input
-              type="date"
-              className="form-control form-control-sm bg-dark border-secondary text-white"
-              style={{ maxWidth: 150 }}
-              value={dateRange.startDate}
-              onChange={(e) => setDateRange((p) => ({ ...p, startDate: e.target.value }))}
-            />
-            <span className="text-white-50">to</span>
-            <input
-              type="date"
-              className="form-control form-control-sm bg-dark border-secondary text-white"
-              style={{ maxWidth: 150 }}
-              value={dateRange.endDate}
-              onChange={(e) => setDateRange((p) => ({ ...p, endDate: e.target.value }))}
-            />
-            <button type="button" className="btn btn-sm text-white" style={{ background: '#20c997' }} onClick={fetchAll}>
-              Update
+          <div className="admin-header-right">
+            <div className="admin-date-filter">
+              <input
+                type="date"
+                value={dateRange.startDate}
+                onChange={(e) => setDateRange((p) => ({ ...p, startDate: e.target.value }))}
+              />
+              <span className="text-muted small">to</span>
+              <input
+                type="date"
+                value={dateRange.endDate}
+                onChange={(e) => setDateRange((p) => ({ ...p, endDate: e.target.value }))}
+              />
+              <button type="button" className="btn btn-sm text-white" style={{ background: '#20c997' }} onClick={fetchAll}>
+                Update
+              </button>
+            </div>
+            <button type="button" className="admin-header-icon" aria-label="Notifications">
+              <i className="fas fa-bell"></i>
+            </button>
+            <button type="button" className="admin-header-icon" aria-label="Settings">
+              <i className="fas fa-cog"></i>
+            </button>
+            <div className="admin-header-user">
+              <i className="fas fa-user-circle fa-2x" style={{ color: '#6B46C1' }}></i>
+              <span>{user?.name ?? 'System Admin'}</span>
+            </div>
+            <button type="button" className="admin-refresh-btn" onClick={fetchAll} disabled={loading}>
+              <i className={`fas fa-sync-alt ${loading ? 'fa-spin' : ''}`}></i>
+              Refresh Data
             </button>
           </div>
-        </div>
+        </header>
 
-        {error && <div className="alert alert-danger py-2 small">{error}</div>}
-        {loading ? (
-          <div className="text-center py-5">
-            <div className="spinner-border text-info" role="status"><span className="visually-hidden">Loading...</span></div>
+        <div className="admin-content">
+          <div className="admin-page-header">
+            <h2 className="admin-page-title">Admin Dashboard</h2>
+            <p className="admin-page-subtitle">Welcome back! Here's what's happening with your platform today.</p>
           </div>
-        ) : (
-          <>
-            {/* Summary cards */}
-            <div className="row g-3 mb-4">
-              <div className="col-6 col-lg-3">
-                <div className="rounded p-3 h-100" style={{ background: '#252836' }}>
-                  <div className="small text-white-50 mb-1">Registered customers</div>
-                  <div className="h4 mb-0 fw-bold" style={{ color: '#20c997' }}>{summary?.totalCustomers ?? 0}</div>
-                  <div className="small text-white-50">On your platform</div>
-                </div>
-              </div>
-              <div className="col-6 col-lg-3">
-                <div className="rounded p-3 h-100" style={{ background: '#252836' }}>
-                  <div className="small text-white-50 mb-1">Total cafes</div>
-                  <div className="h4 mb-0 fw-bold text-white">{summary?.totalCafes ?? 0}</div>
-                  <div className="small text-white-50">Locations</div>
-                </div>
-              </div>
-              <div className="col-6 col-lg-3">
-                <div className="rounded p-3 h-100" style={{ background: '#252836' }}>
-                  <div className="small text-white-50 mb-1">Total orders</div>
-                  <div className="h4 mb-0 fw-bold text-white">{summary?.totalOrders ?? 0}</div>
-                  <div className="small text-white-50">All time in range</div>
-                </div>
-              </div>
-              <div className="col-6 col-lg-3">
-                <div className="rounded p-3 h-100" style={{ background: '#252836' }}>
-                  <div className="small text-white-50 mb-1">Total sales</div>
-                  <div className="h4 mb-0 fw-bold" style={{ color: '#20c997' }}>
-                    {summary?.totalSales != null ? Number(summary.totalSales).toFixed(2) : '0.00'}
-                  </div>
-                  <div className="small text-white-50">Revenue</div>
-                </div>
-              </div>
-            </div>
 
-            <div className="row g-3 mb-4">
-              {/* Users / Orders activity chart */}
-              <div className="col-lg-8">
-                <div className="rounded p-3 h-100" style={{ background: '#252836' }}>
-                  <h6 className="mb-3 text-white">Orders & sales (daily)</h6>
-                  {dailyStats.dailyStats && dailyStats.dailyStats.length > 0 ? (
+          {error && <div className="alert alert-danger py-2 small">{error}</div>}
+          {loading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div>
+            </div>
+          ) : (
+            <>
+              {/* Summary cards */}
+              <div className="row g-3 mb-4">
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon blue"><i className="fas fa-users"></i></div>
+                    <div className="admin-card-title">Total Registered Users</div>
+                    <div className="admin-card-value" style={{ color: '#2563eb' }}>{totalCustomers}</div>
+                    <div className="admin-card-desc">{totalCustomers} Active</div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon green"><i className="fas fa-user-check"></i></div>
+                    <div className="admin-card-title">Active Users</div>
+                    <div className="admin-card-value" style={{ color: '#059669' }}>{totalCustomers}</div>
+                    <div className="admin-card-desc">{totalCustomers ? '100.00% of total' : '0% of total'}</div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon orange"><i className="fas fa-user-times"></i></div>
+                    <div className="admin-card-title">Inactive Users</div>
+                    <div className="admin-card-value" style={{ color: '#ea580c' }}>0</div>
+                    <div className="admin-card-desc">0% of total</div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon red"><i className="fas fa-lock"></i></div>
+                    <div className="admin-card-title">Password Reset Required</div>
+                    <div className="admin-card-value" style={{ color: '#dc2626' }}>0</div>
+                    <div className="admin-card-desc">Need attention</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row g-3 mb-4">
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon teal"><i className="fas fa-user-plus"></i></div>
+                    <div className="admin-card-title">Today's New Registrations</div>
+                    <div className="admin-card-value">{totalCustomers}</div>
+                    <div className="admin-card-desc">+100.00% of total</div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon orange"><i className="fas fa-envelope"></i></div>
+                    <div className="admin-card-title">Unverified Emails</div>
+                    <div className="admin-card-value" style={{ color: '#ea580c' }}>0</div>
+                    <div className="admin-card-desc">Need verification</div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon gray"><i className="fas fa-store"></i></div>
+                    <div className="admin-card-title">Total Cafes</div>
+                    <div className="admin-card-value">{totalCafes}</div>
+                    <div className="admin-card-desc">{totalCafes} Active</div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon purple"><i className="fas fa-clipboard-list"></i></div>
+                    <div className="admin-card-title">Today's Bookings</div>
+                    <div className="admin-card-value">0</div>
+                    <div className="admin-card-desc">Weekly performance</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row g-3 mb-4">
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon teal"><i className="fas fa-clock"></i></div>
+                    <div className="admin-card-title">This Week Bookings</div>
+                    <div className="admin-card-value">0</div>
+                    <div className="admin-card-desc">Weekly performance</div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon gray"><i className="fas fa-shopping-cart"></i></div>
+                    <div className="admin-card-title">Total Orders</div>
+                    <div className="admin-card-value">{totalOrdersVal}</div>
+                    <div className="admin-card-desc">All time in range</div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon purple"><i className="fas fa-truck"></i></div>
+                    <div className="admin-card-title">Pending Orders</div>
+                    <div className="admin-card-value">{pending}</div>
+                    <div className="admin-card-desc">Placed + Preparing + Ready</div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3">
+                  <div className="admin-card">
+                    <div className="admin-card-icon green"><i className="fas fa-money-bill-wave"></i></div>
+                    <div className="admin-card-title">Total Revenue</div>
+                    <div className="admin-card-value" style={{ color: '#059669' }}>₹{totalSales}</div>
+                    <div className="admin-card-desc">Revenue</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Charts row */}
+              <div className="row g-3 mb-4">
+                <div className="col-lg-8">
+                  <div className="admin-chart-card">
+                    <h6 className="admin-chart-title">Weekly Growth Analytics</h6>
+                    <p className="admin-chart-subtitle">Last 7 days performance metrics</p>
+                    {weeklyData.length > 0 ? (
+                      <ResponsiveContainer width="100%" height={280}>
+                        <BarChart data={weeklyData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                          <XAxis dataKey="date" stroke="#6b7280" tick={{ fontSize: 11 }} />
+                          <YAxis stroke="#6b7280" tick={{ fontSize: 11 }} />
+                          <Tooltip
+                            contentStyle={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 8 }}
+                            labelStyle={{ color: '#374151' }}
+                          />
+                          <Legend />
+                          <Bar dataKey="orderCount" name="Orders" fill="#059669" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="sales" name="Sales" fill="#ea580c" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="bookings" name="Bookings" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <p className="text-muted small mb-0 py-4 text-center">No daily data for selected period.</p>
+                    )}
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="admin-chart-card">
+                    <h6 className="admin-chart-title">User Distribution</h6>
+                    <p className="admin-chart-subtitle">By role category</p>
                     <ResponsiveContainer width="100%" height={280}>
-                      <BarChart data={dailyStats.dailyStats} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#3d4152" />
-                        <XAxis dataKey="date" stroke="#8a8d9a" tick={{ fontSize: 11 }} />
-                        <YAxis yAxisId="left" stroke="#8a8d9a" tick={{ fontSize: 11 }} />
-                        <YAxis yAxisId="right" orientation="right" stroke="#8a8d9a" tick={{ fontSize: 11 }} />
-                        <Tooltip contentStyle={{ background: '#252836', border: '1px solid #3d4152' }} labelStyle={{ color: '#20c997' }} />
+                      <PieChart>
+                        <Pie
+                          data={userDistribution}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={90}
+                          paddingAngle={2}
+                          dataKey="value"
+                          nameKey="name"
+                          label={({ name, value }) => value > 0 ? `${name}: ${value}` : null}
+                        >
+                          {userDistribution.map((entry, i) => (
+                            <Cell key={i} fill={ROLES.find((r) => r.name === entry.name)?.color ?? '#6b7280'} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ background: '#fff', border: '1px solid #e5e7eb' }} />
                         <Legend />
-                        <Bar yAxisId="left" dataKey="orderCount" name="Orders" fill="#20c997" radius={[4, 4, 0, 0]} />
-                        <Bar yAxisId="right" dataKey="sales" name="Sales" fill="#6c5ce7" radius={[4, 4, 0, 0]} />
-                      </BarChart>
+                      </PieChart>
                     </ResponsiveContainer>
-                  ) : (
-                    <p className="text-white-50 small mb-0 py-4 text-center">No daily data for selected period.</p>
-                  )}
-                </div>
-              </div>
-              {/* Orders by status */}
-              <div className="col-lg-4">
-                <div className="rounded p-3 h-100" style={{ background: '#252836' }}>
-                  <h6 className="mb-3 text-white">Orders by status</h6>
-                  <div className="mb-2">
-                    <div className="d-flex justify-content-between small mb-1"><span>Placed</span><span>{placed}</span></div>
-                    <div className="progress" style={{ height: 8, background: '#3d4152' }}>
-                      <div className="progress-bar bg-secondary" role="progressbar" style={{ width: totalOrdersVal ? (placed / totalOrdersVal * 100) : 0 }} />
-                    </div>
-                  </div>
-                  <div className="mb-2">
-                    <div className="d-flex justify-content-between small mb-1"><span>Preparing</span><span>{preparing}</span></div>
-                    <div className="progress" style={{ height: 8, background: '#3d4152' }}>
-                      <div className="progress-bar bg-info" role="progressbar" style={{ width: totalOrdersVal ? (preparing / totalOrdersVal * 100) : 0 }} />
-                    </div>
-                  </div>
-                  <div className="mb-2">
-                    <div className="d-flex justify-content-between small mb-1"><span>Ready</span><span>{ready}</span></div>
-                    <div className="progress" style={{ height: 8, background: '#3d4152' }}>
-                      <div className="progress-bar" role="progressbar" style={{ width: totalOrdersVal ? (ready / totalOrdersVal * 100) : 0, background: '#6c5ce7' }} />
-                    </div>
-                  </div>
-                  <div className="mb-0">
-                    <div className="d-flex justify-content-between small mb-1"><span>Served</span><span>{served}</span></div>
-                    <div className="progress" style={{ height: 8, background: '#3d4152' }}>
-                      <div className="progress-bar" role="progressbar" style={{ width: totalOrdersVal ? (served / totalOrdersVal * 100) : 0, background: '#20c997' }} />
-                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="row g-3 mb-4">
-              {/* Sales trend line chart */}
-              <div className="col-lg-8">
-                <div className="rounded p-3 h-100" style={{ background: '#252836' }}>
-                  <h6 className="mb-3 text-white">Sales & orders trend</h6>
-                  {dailyStats.dailyStats && dailyStats.dailyStats.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={260}>
-                      <LineChart data={dailyStats.dailyStats} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#3d4152" />
-                        <XAxis dataKey="date" stroke="#8a8d9a" tick={{ fontSize: 11 }} />
-                        <YAxis stroke="#8a8d9a" tick={{ fontSize: 11 }} />
-                        <Tooltip contentStyle={{ background: '#252836', border: '1px solid #3d4152' }} />
-                        <Legend />
-                        <Line type="monotone" dataKey="sales" name="Sales" stroke="#20c997" strokeWidth={2} dot={{ fill: '#20c997' }} />
-                        <Line type="monotone" dataKey="orderCount" name="Orders" stroke="#6c5ce7" strokeWidth={2} dot={{ fill: '#6c5ce7' }} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <p className="text-white-50 small mb-0 py-4 text-center">No data for selected period.</p>
-                  )}
+              {/* Orders by status + Cafe locations + Recent Activities */}
+              <div className="row g-3">
+                <div className="col-lg-4">
+                  <div className="admin-chart-card">
+                    <h6 className="admin-chart-title">Orders by status</h6>
+                    <div className="mb-2">
+                      <div className="d-flex justify-content-between small mb-1"><span>Placed</span><span>{placed}</span></div>
+                      <div className="progress" style={{ height: 8, background: '#e5e7eb' }}>
+                        <div className="progress-bar bg-secondary" role="progressbar" style={{ width: totalOrdersVal ? (placed / totalOrdersVal * 100) : 0 }} />
+                      </div>
+                    </div>
+                    <div className="mb-2">
+                      <div className="d-flex justify-content-between small mb-1"><span>Preparing</span><span>{preparing}</span></div>
+                      <div className="progress" style={{ height: 8, background: '#e5e7eb' }}>
+                        <div className="progress-bar bg-info" role="progressbar" style={{ width: totalOrdersVal ? (preparing / totalOrdersVal * 100) : 0 }} />
+                      </div>
+                    </div>
+                    <div className="mb-2">
+                      <div className="d-flex justify-content-between small mb-1"><span>Ready</span><span>{ready}</span></div>
+                      <div className="progress" style={{ height: 8, background: '#e5e7eb' }}>
+                        <div className="progress-bar" role="progressbar" style={{ width: totalOrdersVal ? (ready / totalOrdersVal * 100) : 0, background: '#6B46C1' }} />
+                      </div>
+                    </div>
+                    <div className="mb-0">
+                      <div className="d-flex justify-content-between small mb-1"><span>Served</span><span>{served}</span></div>
+                      <div className="progress" style={{ height: 8, background: '#e5e7eb' }}>
+                        <div className="progress-bar" role="progressbar" style={{ width: totalOrdersVal ? (served / totalOrdersVal * 100) : 0, background: '#059669' }} />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              {/* Cafe locations */}
-              <div className="col-lg-4">
-                <div className="rounded p-3 h-100" style={{ background: '#252836' }}>
-                  <h6 className="mb-3 text-white">Cafe locations</h6>
-                  {cafeLocations.length === 0 ? (
-                    <p className="text-white-50 small mb-0">No cafes.</p>
-                  ) : (
-                    <ul className="list-unstyled mb-0">
-                      {cafeLocations.map((c) => (
-                        <li key={c.id} className="mb-3 pb-3 border-bottom border-secondary">
-                          <div className="fw-medium text-white">{c.name}</div>
-                          {c.address && <div className="small text-white-50">{c.address}</div>}
-                          {c.phone && <div className="small text-white-50">{c.phone}</div>}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  <Link to="/admin/cafes" className="btn btn-sm mt-2 text-dark" style={{ background: '#20c997' }}>Manage cafés</Link>
+                <div className="col-lg-4">
+                  <div className="admin-chart-card">
+                    <h6 className="admin-chart-title">Cafe locations</h6>
+                    {cafeLocations.length === 0 ? (
+                      <p className="text-muted small mb-0">No cafes.</p>
+                    ) : (
+                      <ul className="list-unstyled mb-3">
+                        {cafeLocations.map((c) => (
+                          <li key={c.id} className="mb-3 pb-3 border-bottom">
+                            <div className="fw-medium text-dark">{c.name}</div>
+                            {c.address && <div className="small text-muted">{c.address}</div>}
+                            {c.phone && <div className="small text-muted">{c.phone}</div>}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <Link to="/admin/cafes" className="btn btn-sm text-white" style={{ background: '#059669' }}>
+                      Manage cafés
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Quick links */}
-            <div className="row g-3">
-              <div className="col-12">
-                <div className="rounded p-3" style={{ background: '#252836' }}>
-                  <h6 className="mb-2 text-white">Quick links</h6>
-                  <div className="d-flex flex-wrap gap-2">
-                    <Link to="/admin/cafes" className="btn btn-sm btn-outline-secondary">Cafes</Link>
-                    <Link to="/admin/cafeowners" className="btn btn-sm btn-outline-secondary">Cafe owners</Link>
+                <div className="col-lg-4">
+                  <div className="admin-activities-card">
+                    <div className="admin-activities-header">
+                      <div>
+                        <h6 className="admin-activities-title">Recent Activities</h6>
+                        <p className="admin-activities-subtitle">Latest platform activities and events.</p>
+                      </div>
+                      <button type="button" className="admin-view-all border-0 bg-transparent p-0">View All →</button>
+                    </div>
+                    {recentActivities.length > 0 ? (
+                      <div>
+                        {recentActivities.map((a, i) => (
+                          <div key={i} className="admin-activity-item">
+                            <div className="admin-activity-avatar"><i className="fas fa-user"></i></div>
+                            <div className="admin-activity-text">{a.description ?? a.message ?? 'Activity'}</div>
+                            <span className="admin-activity-badge">{a.role ?? 'USER'}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="admin-activity-item">
+                        <div className="admin-activity-avatar"><i className="fas fa-user"></i></div>
+                        <div className="admin-activity-text text-muted">No recent activities.</div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

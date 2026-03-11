@@ -75,6 +75,7 @@ function Navbar({ isLoggedIn }) {
                       {isAdmin && (
                         <>
                           <li><Link to="/admin/dashboard" className="dropdown-item">Dashboard</Link></li>
+                          <li><Link to="/admin/analytics" className="dropdown-item">Analytics</Link></li>
                           <li><Link to="/admin/cafes" className="dropdown-item">Cafes</Link></li>
                           <li><Link to="/admin/cafeowners" className="dropdown-item">Cafe Owners</Link></li>
                           <li>

@@ -1,0 +1,340 @@
+/* Admin Dashboard - Target UI (light content, dark sidebar) */
+
+.admin-layout {
+  display: flex;
+  min-height: calc(100vh - 56px); /* below navbar */
+}
+
+.admin-sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: #2C2E4A;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.admin-sidebar-brand {
+  padding: 1.25rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-sidebar-brand i {
+  color: #6B46C1;
+}
+
+.admin-sidebar-nav {
+  padding: 0.5rem 0;
+}
+
+.admin-sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.admin-sidebar-nav a:hover,
+.admin-sidebar-nav .admin-sidebar-nav-link:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+.admin-sidebar-nav .admin-sidebar-nav-link {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  color: rgba(255,255,255,0.9);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.admin-sidebar-nav .admin-sidebar-nav-link i {
+  width: 20px;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.admin-sidebar-nav a.active {
+  background: #6B46C1;
+  color: #fff;
+}
+
+.admin-sidebar-nav a i {
+  width: 20px;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.admin-main {
+  flex: 1;
+  background: #f5f6fa;
+  min-width: 0;
+}
+
+.admin-header {
+  background: #fff;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e8e9ec;
+}
+
+.admin-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-header-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1d29;
+  margin: 0;
+}
+
+.admin-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-header-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #f0f1f5;
+  color: #5a5d6b;
+  border: none;
+  cursor: pointer;
+}
+
+.admin-header-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: #5a5d6b;
+  font-size: 0.9rem;
+}
+
+.admin-refresh-btn {
+  background: #6B46C1 !important;
+  color: #fff !important;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.admin-refresh-btn:hover {
+  background: #5a3aa8 !important;
+  color: #fff !important;
+}
+
+.admin-content {
+  padding: 1.5rem;
+}
+
+.admin-page-header {
+  margin-bottom: 1.5rem;
+}
+
+.admin-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1d29;
+  margin: 0 0 0.25rem 0;
+}
+
+.admin-page-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Summary cards - white, rounded, shadow */
+.admin-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  height: 100%;
+  position: relative;
+}
+
+.admin-card-title {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.admin-card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1d29;
+  margin-bottom: 0.25rem;
+}
+
+.admin-card-desc {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.admin-card-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.admin-card-icon.blue { background: #dbeafe; color: #2563eb; }
+.admin-card-icon.green { background: #d1fae5; color: #059669; }
+.admin-card-icon.orange { background: #ffedd5; color: #ea580c; }
+.admin-card-icon.red { background: #fee2e2; color: #dc2626; }
+.admin-card-icon.teal { background: #ccfbf1; color: #0d9488; }
+.admin-card-icon.purple { background: #ede9fe; color: #6B46C1; }
+.admin-card-icon.gray { background: #f3f4f6; color: #6b7280; }
+
+/* Chart cards */
+.admin-chart-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom: 1.5rem;
+}
+
+.admin-chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1d29;
+  margin: 0 0 0.25rem 0;
+}
+
+.admin-chart-subtitle {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+}
+
+/* Recent Activities */
+.admin-activities-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.admin-activities-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.admin-activities-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1d29;
+  margin: 0 0 0.25rem 0;
+}
+
+.admin-activities-subtitle {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.admin-view-all {
+  color: #6B46C1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-view-all:hover {
+  color: #5a3aa8;
+}
+
+.admin-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.admin-activity-item:last-child {
+  border-bottom: none;
+}
+
+.admin-activity-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.admin-activity-text {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.admin-activity-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: #ede9fe;
+  color: #6B46C1;
+}
+
+/* Date filter */
+.admin-date-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-date-filter input {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}

@@ -135,6 +135,14 @@ export async function getCafeOwners() {
   const { data } = await api.get('/api/admin/cafeowners');
   return data;
 }
+export async function getAdminBookings(params = {}) {
+  const { data } = await api.get('/api/admin/bookings', { params });
+  return data;
+}
+export async function getAdminOrders(params = {}) {
+  const { data } = await api.get('/api/admin/orders', { params });
+  return data;
+}
 
 export async function updateCafeOwnerStatus(id, payload) {
   const { data } = await api.patch(`/api/admin/cafeowners/${id}/status`, payload);

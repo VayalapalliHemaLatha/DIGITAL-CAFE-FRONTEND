@@ -1,0 +1,110 @@
+/* Admin Analytics page - specific styles */
+
+.analytics-summary-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  position: relative;
+}
+
+.analytics-summary-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.analytics-summary-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1d29;
+}
+
+.analytics-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.analytics-tag-blue { background: #dbeafe; color: #2563eb; }
+.analytics-tag-purple { background: #ede9fe; color: #6B46C1; }
+.analytics-tag-gray { background: #f3f4f6; color: #6b7280; }
+.analytics-tag-darkblue { background: #dbeafe; color: #1e40af; }
+.analytics-tag-orange { background: #ffedd5; color: #ea580c; }
+.analytics-tag-green { background: #d1fae5; color: #059669; }
+
+/* Users by Role bars */
+.analytics-role-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.analytics-role-row {
+  margin-bottom: 0.5rem;
+}
+
+.analytics-role-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.analytics-role-count {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.analytics-role-bar-bg {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.analytics-role-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Weekly Growth table */
+.analytics-weekly-table {
+  font-size: 0.9rem;
+}
+
+.analytics-weekly-table th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Current Summary Snapshot */
+.analytics-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem 2rem;
+}
+
+.analytics-snapshot-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.analytics-snapshot-pair span {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.analytics-snapshot-pair strong {
+  font-size: 1.1rem;
+  color: #1a1d29;
+}

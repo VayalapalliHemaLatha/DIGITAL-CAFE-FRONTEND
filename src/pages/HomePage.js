@@ -18,6 +18,8 @@ function HomePage({ isLoggedIn }) {
   const roleType = (user?.roleType || '').toLowerCase();
   const isAdmin = roleType === 'admin';
   return (
+
+    
     <>
       {/* Hero - Enjoy Our Delicious Meal */}
       <div className="hero-header hero-home" style={{ backgroundImage: `linear-gradient(rgba(15, 23, 43, .85), rgba(15, 23, 43, .85)), url(${HERO_BG})` }}>
