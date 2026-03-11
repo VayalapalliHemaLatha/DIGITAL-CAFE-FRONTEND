@@ -17,7 +17,9 @@ import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminLogsPage from './pages/AdminLogsPage';
 import AdminCafesPage from './pages/AdminCafesPage';
 import AdminCafeOwnersPage from './pages/AdminCafeOwnersPage';
+import CafeOwnerDashboardPage from './pages/CafeOwnerDashboardPage';
 import CafeOwnerStaffPage from './pages/CafeOwnerStaffPage';
+import CafeOwnerSettingsPage from './pages/CafeOwnerSettingsPage';
 import CafeOwnerMenuPage from './pages/CafeOwnerMenuPage';
 import CafeOwnerTablesPage from './pages/CafeOwnerTablesPage';
 import CafeOwnerBookingsPage from './pages/CafeOwnerBookingsPage';
@@ -59,7 +61,9 @@ function App() {
           <Route path="/admin/logs" element={<AdminLogsPage onAuthChange={onAuthChange} />} />
           <Route path="/admin/cafes" element={<AdminCafesPage onAuthChange={onAuthChange} />} />
           <Route path="/admin/cafeowners" element={<AdminCafeOwnersPage onAuthChange={onAuthChange} />} />
+          <Route path="/cafeowner/dashboard" element={<CafeOwnerDashboardPage onAuthChange={onAuthChange} />} />
           <Route path="/cafeowner/staff" element={<CafeOwnerStaffPage onAuthChange={onAuthChange} />} />
+          <Route path="/cafeowner/settings" element={<CafeOwnerSettingsPage onAuthChange={onAuthChange} />} />
           <Route path="/cafeowner/menu" element={<CafeOwnerMenuPage onAuthChange={onAuthChange} />} />
           <Route path="/cafeowner/tables" element={<CafeOwnerTablesPage onAuthChange={onAuthChange} />} />
           <Route path="/cafeowner/bookings" element={<CafeOwnerBookingsPage onAuthChange={onAuthChange} />} />

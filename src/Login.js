@@ -31,7 +31,7 @@ const Login = ({ onAuthChange }) => {
             if (role === 'admin') {
               navigate('/admin/dashboard');
             } else if (role === 'cafeowner') {
-              navigate('/cafeowner/staff');
+              navigate('/cafeowner/dashboard');
             } else if (role === 'chef') {
               navigate('/chef/orders');
             } else if (role === 'waiter') {

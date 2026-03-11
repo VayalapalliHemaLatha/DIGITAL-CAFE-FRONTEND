@@ -87,6 +87,7 @@ function Navbar({ isLoggedIn }) {
                       )}
                       {isCafeOwner && (
                         <>
+                          <li><Link to="/cafeowner/dashboard" className="dropdown-item">Dashboard</Link></li>
                           <li><Link to="/cafeowner/staff" className="dropdown-item">Staff</Link></li>
                           <li><Link to="/cafeowner/menu" className="dropdown-item">Menu</Link></li>
                           <li><Link to="/cafeowner/tables" className="dropdown-item">Tables</Link></li>

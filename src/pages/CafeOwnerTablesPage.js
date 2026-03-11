@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { authApi } from '../api';
 import {
   getCafeOwnerTables,
@@ -8,8 +8,7 @@ import {
   updateCafeOwnerTableStatus,
   deleteCafeOwnerTable,
 } from '../api';
-
-const PAGE_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920';
+import CafeOwnerLayout from '../components/CafeOwnerLayout';
 const STATUSES = ['available', 'booked'];
 
 function CafeOwnerTablesPage({ onAuthChange }) {
@@ -143,25 +142,8 @@ function CafeOwnerTablesPage({ onAuthChange }) {
   if (!isCafeOwner) return null;
 
   return (
-    <>
-      <div className="hero-header hero-page" style={{ backgroundImage: `linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(${PAGE_BG})` }}>
-        <div className="container py-4">
-          <nav className="mb-2">
-            <ol className="breadcrumb mb-0">
-              <li className="breadcrumb-item"><Link to="/" className="text-primary">Home</Link></li>
-              <li className="breadcrumb-item text-white">Cafe Owner</li>
-              <li className="breadcrumb-item text-white active" aria-current="page">Tables</li>
-            </ol>
-          </nav>
-          <h1 className="display-6 text-white fw-bold mb-0">Tables</h1>
-          <p className="text-white-50 mb-0 mt-1">Manage your tables</p>
-        </div>
-      </div>
-
-      <div className="container py-5">
-        <div className="row justify-content-center">
-          <div className="col-12">
-            <div className="auth-card p-4 p-lg-5">
+    <CafeOwnerLayout title="Tables" subtitle="Manage your tables">
+      <div className="admin-chart-card">
               {error && <div className="alert alert-danger py-2 small">{error}</div>}
               <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
                 <h5 className="mb-0">Tables</h5>
@@ -233,9 +215,6 @@ function CafeOwnerTablesPage({ onAuthChange }) {
                   )}
                 </>
               )}
-            </div>
-          </div>
-        </div>
       </div>
 
       {modal.show && (
@@ -295,7 +274,7 @@ function CafeOwnerTablesPage({ onAuthChange }) {
           </div>
         </div>
       )}
-    </>
+    </CafeOwnerLayout>
   );
 }
 

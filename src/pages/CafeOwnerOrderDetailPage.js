@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { authApi } from '../api';
 import { getCafeOwnerOrderById } from '../api';
-
-const PAGE_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920';
+import CafeOwnerLayout from '../components/CafeOwnerLayout';
 const REFRESH_EVENT = 'orders-refresh';
 
 function CafeOwnerOrderDetailPage({ onAuthChange }) {
@@ -63,39 +62,17 @@ function CafeOwnerOrderDetailPage({ onAuthChange }) {
 
   if (loading || !order) {
     return (
-      <>
-        <div className="hero-header hero-page" style={{ backgroundImage: `linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(${PAGE_BG})` }}>
-          <div className="container py-4">
-            <h1 className="display-6 text-white fw-bold mb-0">Order</h1>
-          </div>
-        </div>
-        <div className="container py-5 text-center">
+      <CafeOwnerLayout title="Order">
+        <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div>
         </div>
-      </>
+      </CafeOwnerLayout>
     );
   }
 
   return (
-    <>
-      <div className="hero-header hero-page" style={{ backgroundImage: `linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(${PAGE_BG})` }}>
-        <div className="container py-4">
-          <nav className="mb-2">
-            <ol className="breadcrumb mb-0">
-              <li className="breadcrumb-item"><Link to="/" className="text-primary">Home</Link></li>
-              <li className="breadcrumb-item text-white">Cafe Owner</li>
-              <li className="breadcrumb-item"><Link to="/cafeowner/orders" className="text-primary">Orders</Link></li>
-              <li className="breadcrumb-item text-white active" aria-current="page">Order #{order.id}</li>
-            </ol>
-          </nav>
-          <h1 className="display-6 text-white fw-bold mb-0">Order #{order.id}</h1>
-        </div>
-      </div>
-
-      <div className="container py-5">
-        <div className="row justify-content-center">
-          <div className="col-lg-8">
-            <div className="auth-card p-4 p-lg-5">
+    <CafeOwnerLayout title={`Order #${order.id}`} subtitle="Order details">
+      <div className="admin-chart-card">
               {error && <div className="alert alert-danger py-2 small mb-3">{error}</div>}
               <p><strong>Status:</strong> <span className={`badge ${order.status === 'served' ? 'bg-success' : order.status === 'ready' ? 'bg-info' : 'bg-secondary'}`}>{order.status}</span></p>
               <p><strong>Customer:</strong> {order.userName || `User #${order.userId}`}</p>
@@ -121,12 +98,9 @@ function CafeOwnerOrderDetailPage({ onAuthChange }) {
                 </>
               )}
               <p className="mb-0"><strong>Total:</strong> {order.totalAmount != null ? Number(order.totalAmount).toFixed(2) : '—'}</p>
-              <Link to="/cafeowner/orders" className="btn btn-outline-primary mt-3">Back to orders</Link>
-            </div>
-          </div>
-        </div>
+        <Link to="/cafeowner/orders" className="btn btn-outline-primary mt-3">Back to orders</Link>
       </div>
-    </>
+    </CafeOwnerLayout>
   );
 }
 

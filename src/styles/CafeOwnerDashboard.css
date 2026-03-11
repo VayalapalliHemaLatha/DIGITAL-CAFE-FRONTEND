@@ -1,0 +1,116 @@
+/* Cafe Owner Dashboard - matches design */
+
+.cafeowner-back-home {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.cafeowner-back-home:hover {
+  color: #fff;
+}
+
+.cafeowner-cafe-name {
+  padding: 1rem 1.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.cafeowner-portal-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 1.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.5);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.cafe-owner-sidebar {
+  position: relative;
+  padding-bottom: 50px;
+}
+
+/* Cafe operations banner */
+.cafeowner-banner {
+  background: linear-gradient(135deg, #6B46C1 0%, #5a3aa8 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.cafeowner-banner-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+}
+
+.cafeowner-banner-desc {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.cafeowner-banner-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* KPI cards */
+.cafeowner-kpi-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  height: 100%;
+}
+
+.cafeowner-kpi-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.cafeowner-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1d29;
+  margin-bottom: 0.25rem;
+}
+
+.cafeowner-kpi-desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.cafeowner-kpi-btn {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6B46C1;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cafeowner-kpi-btn:hover {
+  color: #5a3aa8;
+}
