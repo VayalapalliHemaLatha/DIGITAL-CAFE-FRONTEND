@@ -1,0 +1,262 @@
+/* Chef & Waiter - dark blue sidebar, light content */
+
+.chef-waiter-layout {
+  display: flex;
+  min-height: calc(100vh - 56px);
+}
+
+.chef-waiter-sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: #1e3a5f;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.chef-waiter-sidebar-brand {
+  padding: 1.25rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chef-waiter-sidebar-brand i {
+  color: #f97316;
+}
+
+.chef-waiter-portal-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.6);
+  padding: 0 1.5rem 0.75rem;
+}
+
+.chef-waiter-sidebar-nav {
+  padding: 0.5rem 0;
+}
+
+.chef-waiter-sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.chef-waiter-sidebar-nav a:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.chef-waiter-sidebar-nav a.active {
+  background: #f97316;
+  color: #fff;
+}
+
+.waiter-sidebar .chef-waiter-sidebar-nav a.active {
+  background: #2563eb;
+}
+
+.chef-waiter-sidebar-nav a i {
+  width: 20px;
+  text-align: center;
+}
+
+.chef-waiter-back-home {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: auto;
+}
+
+.chef-waiter-back-home:hover {
+  color: #fff;
+}
+
+.chef-waiter-main {
+  flex: 1;
+  background: #f5f6fa;
+  min-width: 0;
+}
+
+.chef-waiter-header {
+  background: #fff;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 1px solid #e8e9ec;
+}
+
+.chef-waiter-header-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1d29;
+  margin: 0;
+}
+
+.chef-waiter-header-subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0 0;
+}
+
+.chef-waiter-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.chef-waiter-datetime {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.chef-waiter-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.chef-waiter-content {
+  padding: 1.5rem;
+}
+
+/* Summary cards */
+.chef-waiter-summary-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+}
+
+.chef-waiter-summary-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.chef-waiter-summary-icon.orange { background: #ffedd5; color: #ea580c; }
+.chef-waiter-summary-icon.blue { background: #dbeafe; color: #2563eb; }
+.chef-waiter-summary-icon.green { background: #d1fae5; color: #059669; }
+.chef-waiter-summary-icon.purple { background: #ede9fe; color: #6B46C1; }
+.chef-waiter-summary-icon.red { background: #fee2e2; color: #dc2626; }
+
+.chef-waiter-summary-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1d29;
+}
+
+.chef-waiter-summary-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Order cards */
+.chef-waiter-order-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-left: 4px solid #e5e7eb;
+}
+
+.chef-waiter-order-card.pending { border-left-color: #ea580c; }
+.chef-waiter-order-card.preparing { border-left-color: #2563eb; }
+.chef-waiter-order-card.ready { border-left-color: #059669; }
+
+.chef-waiter-order-id {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.chef-waiter-order-meta {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.chef-waiter-order-items {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+}
+
+.chef-waiter-order-items li {
+  padding: 0.25rem 0;
+}
+
+.chef-waiter-order-total {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+/* Filter tabs */
+.chef-waiter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.chef-waiter-tab {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.chef-waiter-tab:hover {
+  background: #d1d5db;
+}
+
+.chef-waiter-tab.active {
+  background: #f97316;
+  color: #fff;
+}
+
+.waiter-dashboard .chef-waiter-tab.active {
+  background: #2563eb;
+}
+
+.empty-state-box {
+  background: #f9fafb;
+  border: 2px dashed #e5e7eb;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: #6b7280;
+}

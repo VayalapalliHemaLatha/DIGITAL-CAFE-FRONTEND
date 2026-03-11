@@ -30,8 +30,12 @@ import CafeDetailPage from './pages/CafeDetailPage';
 import BookingsPage from './pages/BookingsPage';
 import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
+import ChefDashboardPage from './pages/ChefDashboardPage';
 import ChefOrdersPage from './pages/ChefOrdersPage';
+import ChefOrderHistoryPage from './pages/ChefOrderHistoryPage';
+import WaiterDashboardPage from './pages/WaiterDashboardPage';
 import WaiterOrdersPage from './pages/WaiterOrdersPage';
+import WaiterProfilePage from './pages/WaiterProfilePage';
 import { authApi } from './api';
 
 function App() {
@@ -74,8 +78,12 @@ function App() {
           <Route path="/bookings" element={<BookingsPage onAuthChange={onAuthChange} />} />
           <Route path="/orders" element={<OrdersPage onAuthChange={onAuthChange} />} />
           <Route path="/orders/:id" element={<OrderDetailPage onAuthChange={onAuthChange} />} />
+          <Route path="/chef/dashboard" element={<ChefDashboardPage onAuthChange={onAuthChange} />} />
           <Route path="/chef/orders" element={<ChefOrdersPage onAuthChange={onAuthChange} />} />
+          <Route path="/chef/order-history" element={<ChefOrderHistoryPage onAuthChange={onAuthChange} />} />
+          <Route path="/waiter/dashboard" element={<WaiterDashboardPage onAuthChange={onAuthChange} />} />
           <Route path="/waiter/orders" element={<WaiterOrdersPage onAuthChange={onAuthChange} />} />
+          <Route path="/waiter/profile" element={<WaiterProfilePage onAuthChange={onAuthChange} />} />
         </Routes>
       </main>
       <Footer />

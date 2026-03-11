@@ -115,10 +115,16 @@ function Navbar({ isLoggedIn }) {
                         </>
                       )}
                       {isChef && (
-                        <li><Link to="/chef/orders" className="dropdown-item">Orders</Link></li>
+                        <>
+                          <li><Link to="/chef/dashboard" className="dropdown-item">Dashboard</Link></li>
+                          <li><Link to="/chef/orders" className="dropdown-item">Orders</Link></li>
+                        </>
                       )}
                       {isWaiter && (
-                        <li><Link to="/waiter/orders" className="dropdown-item">Orders</Link></li>
+                        <>
+                          <li><Link to="/waiter/dashboard" className="dropdown-item">Dashboard</Link></li>
+                          <li><Link to="/waiter/orders" className="dropdown-item">Orders</Link></li>
+                        </>
                       )}
                     </ul>
                   </div>

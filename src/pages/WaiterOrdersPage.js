@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { authApi } from '../api';
 import { getWaiterOrdersReady, getWaiterOrders, updateWaiterOrderStatus } from '../api';
+import WaiterSidebar from '../components/WaiterSidebar';
+import '../styles/ChefWaiterDashboard.css';
+import '../styles/AdminDashboard.css';
 
-const PAGE_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920';
 const REFRESH_EVENT = 'orders-refresh';
 
 function WaiterOrdersPage({ onAuthChange }) {
@@ -75,104 +77,101 @@ function WaiterOrdersPage({ onAuthChange }) {
   if (!isWaiter) return null;
 
   return (
-    <>
-      <div className="hero-header hero-page" style={{ backgroundImage: `linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(${PAGE_BG})` }}>
-        <div className="container py-4">
-          <nav className="mb-2">
-            <ol className="breadcrumb mb-0">
-              <li className="breadcrumb-item"><Link to="/" className="text-primary">Home</Link></li>
-              <li className="breadcrumb-item text-white active" aria-current="page">Orders</li>
-            </ol>
-          </nav>
-          <h1 className="display-6 text-white fw-bold mb-0">Orders</h1>
-          <p className="text-white-50 mb-0 mt-1">Ready to serve &amp; all orders</p>
-        </div>
-      </div>
-
-      <div className="container py-5">
-        <div className="row justify-content-center">
-          <div className="col-12">
-            <div className="auth-card p-4 p-lg-5">
-              {error && <div className="alert alert-danger py-2 small">{error}</div>}
-              {loading ? (
-                <div className="text-center py-5">
-                  <div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div>
-                </div>
-              ) : (
-                <>
-                  <h5 className="mb-3">Ready to serve</h5>
-                  {readyList.length === 0 ? (
-                    <p className="text-muted mb-4">No orders ready to serve.</p>
-                  ) : (
-                    <div className="table-responsive mb-5">
-                      <table className="table table-hover align-middle mb-0">
-                        <thead className="table-light">
-                          <tr>
-                            <th>ID</th>
-                            <th>Table</th>
-                            <th>Customer</th>
-                            <th>Total</th>
-                            <th className="text-end">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {readyList.map((o) => (
-                            <tr key={o.id}>
-                              <td>{o.id}</td>
-                              <td>{o.tableNumber || o.tableId}</td>
-                              <td>{o.userName || '—'}</td>
-                              <td>{o.totalAmount != null ? Number(o.totalAmount).toFixed(2) : '—'}</td>
-                              <td className="text-end">
-                                <button
-                                  type="button"
-                                  className="btn btn-sm btn-success"
-                                  onClick={() => handleServed(o.id)}
-                                  disabled={updatingId === o.id}
-                                >
-                                  {updatingId === o.id ? <span className="spinner-border spinner-border-sm" /> : 'Mark served'}
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-
-                  <h5 className="mb-3">All orders</h5>
-                  {allList.length === 0 ? (
-                    <p className="text-muted mb-0">No orders.</p>
-                  ) : (
-                    <div className="table-responsive">
-                      <table className="table table-hover align-middle mb-0">
-                        <thead className="table-light">
-                          <tr>
-                            <th>ID</th>
-                            <th>Table</th>
-                            <th>Status</th>
-                            <th>Total</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {allList.map((o) => (
-                            <tr key={o.id}>
-                              <td>{o.id}</td>
-                              <td>{o.tableNumber || o.tableId}</td>
-                              <td><span className={`badge ${o.status === 'served' ? 'bg-success' : o.status === 'ready' ? 'bg-info' : 'bg-secondary'}`}>{o.status}</span></td>
-                              <td>{o.totalAmount != null ? Number(o.totalAmount).toFixed(2) : '—'}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </>
-              )}
+    <div className="chef-waiter-layout waiter-dashboard">
+      <WaiterSidebar />
+      <div className="chef-waiter-main">
+        <header className="chef-waiter-header">
+          <div>
+            <h1 className="chef-waiter-header-title">Waiter Dashboard</h1>
+            <p className="chef-waiter-header-subtitle">Table service & order delivery</p>
+          </div>
+          <div className="chef-waiter-header-right">
+            <div className="chef-waiter-user">
+              <i className="fas fa-user-circle fa-lg" style={{ color: '#2563eb' }}></i>
+              <span>{user?.email ?? 'waiter@demo.com'}</span>
             </div>
           </div>
+        </header>
+        <div className="chef-waiter-content">
+          {error && <div className="alert alert-danger py-2 small">{error}</div>}
+          {loading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div>
+            </div>
+          ) : (
+            <>
+              <h5 className="mb-3">Ready to serve</h5>
+              {readyList.length === 0 ? (
+                <p className="text-muted mb-4">No orders ready to serve.</p>
+              ) : (
+                <div className="table-responsive mb-5">
+                  <table className="table table-hover align-middle mb-0">
+                    <thead className="table-light">
+                      <tr>
+                        <th>ID</th>
+                        <th>Table</th>
+                        <th>Customer</th>
+                        <th>Total</th>
+                        <th className="text-end">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {readyList.map((o) => (
+                        <tr key={o.id}>
+                          <td>{o.id}</td>
+                          <td>{o.tableNumber || o.tableId}</td>
+                          <td>{o.userName || '—'}</td>
+                          <td>{o.totalAmount != null ? Number(o.totalAmount).toFixed(2) : '—'}</td>
+                          <td className="text-end">
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-success"
+                              onClick={() => handleServed(o.id)}
+                              disabled={updatingId === o.id}
+                            >
+                              {updatingId === o.id ? <span className="spinner-border spinner-border-sm" /> : 'Mark served'}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              <h5 className="mb-3">All orders</h5>
+              {allList.length === 0 ? (
+                <p className="text-muted mb-0">No orders.</p>
+              ) : (
+                <div className="admin-chart-card">
+                  <div className="table-responsive">
+                    <table className="table table-hover align-middle mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th>ID</th>
+                          <th>Table</th>
+                          <th>Status</th>
+                          <th>Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allList.map((o) => (
+                          <tr key={o.id}>
+                            <td>{o.id}</td>
+                            <td>{o.tableNumber || o.tableId}</td>
+                            <td><span className={`badge ${o.status === 'served' ? 'bg-success' : o.status === 'ready' ? 'bg-info' : 'bg-secondary'}`}>{o.status}</span></td>
+                            <td>{o.totalAmount != null ? Number(o.totalAmount).toFixed(2) : '—'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
