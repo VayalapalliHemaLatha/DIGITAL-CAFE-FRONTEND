@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authApi } from '../api';
+import { useCart } from '../contexts/CartContext';
 
 const PAGE_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920';
 
 function AccountPage({ onAuthChange }) {
   const navigate = useNavigate();
+  const { clearCart } = useCart();
   const [loggingOut, setLoggingOut] = useState(false);
   const isLoggedIn = authApi.isLoggedIn();
   const user = authApi.getUser();
@@ -13,6 +15,7 @@ function AccountPage({ onAuthChange }) {
   const handleLogout = async () => {
     setLoggingOut(true);
     try {
+      clearCart();
       await authApi.logout();
       onAuthChange?.();
       navigate('/', { replace: true });

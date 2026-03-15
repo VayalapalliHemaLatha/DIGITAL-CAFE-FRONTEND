@@ -8,7 +8,7 @@ function Navbar({ isLoggedIn, onAuthChange }) {
   const location = useLocation();
   const navigate = useNavigate();
   const user = authApi.getUser();
-  const { getTotalItems } = useCart();
+  const { getTotalItems, clearCart } = useCart();
   const roleType = (user?.roleType || '').toLowerCase();
   const isAdmin = roleType === 'admin';
   const isCafeOwner = roleType === 'cafeowner';
@@ -59,6 +59,7 @@ function Navbar({ isLoggedIn, onAuthChange }) {
                           type="button"
                           className="dropdown-item border-0 bg-transparent w-100 text-start"
                           onClick={() => {
+                            clearCart();
                             authApi.logout();
                             onAuthChange?.();
                             navigate('/', { replace: true });

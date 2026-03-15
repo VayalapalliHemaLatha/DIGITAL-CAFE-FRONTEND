@@ -5,7 +5,7 @@ import { authApi } from '../api';
 
 const Navigation = () => {
   const location = useLocation();
-  const { getTotalItems } = useCart();
+  const { getTotalItems, clearCart } = useCart();
   const user = authApi.getUser();
   const totalItems = getTotalItems();
 
@@ -25,6 +25,7 @@ const Navigation = () => {
   const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
+    clearCart();
     authApi.logout();
     window.location.href = '/login';
   };
