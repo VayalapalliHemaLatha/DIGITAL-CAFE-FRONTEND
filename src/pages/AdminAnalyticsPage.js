@@ -1,24 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authApi } from '../api';
-import {
-  getAdminDashboardSummary,
-  getAdminDashboardDailyStats,
-  getAdminDashboardCafeLocations,
-} from '../api';
+import { authApi, getAdminDashboardCafeLocations } from '../api';
 import AdminSidebar from '../components/AdminSidebar';
 import '../styles/AdminDashboard.css';
 import '../styles/AdminAnalytics.css';
-
-const getDefaultDateRange = () => {
-  const end = new Date();
-  const start = new Date();
-  start.setDate(start.getDate() - 7);
-  return {
-    startDate: start.toISOString().slice(0, 10),
-    endDate: end.toISOString().slice(0, 10),
-  };
-};
 
 const ROLES = ['ADMIN', 'CAFE OWNER', 'CHEF', 'WAITER', 'CUSTOMER'];
 
@@ -30,16 +15,8 @@ function AdminAnalyticsPage({ onAuthChange }) {
 
   const [summary, setSummary] = useState(null);
   const [dailyStats, setDailyStats] = useState({ period: '', dailyStats: [] });
-  const [dateRange] = useState(getDefaultDateRange);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
-  const handleAuthFailure = useCallback(() => {
-    authApi.setToken(null);
-    authApi.setUser(null);
-    onAuthChange?.();
-    navigate('/login', { replace: true });
-  }, [navigate, onAuthChange]);
 
   const fetchAll = useCallback(() => {
     setError('');
@@ -72,19 +49,13 @@ function AdminAnalyticsPage({ onAuthChange }) {
         { date: '2024-01-15', orderCount: 65, sales: 812.78, bookings: 19, users: 14 },
       ]
     };
-    
-    const mockCafeLocations = [
-      { id: 1, name: 'Coffee Paradise', address: '123 Main Street, Downtown', phone: '+1-234-567-8900', rating: 4.5, image: 'https://picsum.photos/seed/cafe1/300/200.jpg' },
-      { id: 2, name: 'Brew & Bites', address: '456 Oak Avenue, Uptown', phone: '+1-234-567-8901', rating: 4.8, image: 'https://picsum.photos/seed/cafe2/300/200.jpg' },
-      { id: 3, name: 'The Daily Grind', address: '789 Pine Road, Midtown', phone: '+1-234-567-8902', rating: 4.2, image: 'https://picsum.photos/seed/cafe3/300/200.jpg' },
-    ];
-    
+
     setTimeout(() => {
       setSummary(mockSummary);
       setDailyStats(mockDailyStats);
       setLoading(false);
     }, 800);
-  }, [dateRange.startDate, dateRange.endDate, handleAuthFailure]);
+  }, []);
 
   useEffect(() => {
     if (!isAdmin) {

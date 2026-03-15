@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getCustomerOrders } from '../api';
 import { authApi } from '../api';
+
+const PAGE_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920';
 
 const OrderHistoryPage = () => {
   const [orders, setOrders] = useState([]);
@@ -15,210 +18,136 @@ const OrderHistoryPage = () => {
     try {
       setLoading(true);
       const user = authApi.getUser();
-      const customerId = user?.id || 1; // Default to 1 for demo
-      
+      const customerId = user?.id ?? 1;
       const ordersData = await getCustomerOrders(customerId);
-      setOrders(ordersData);
+      setOrders(Array.isArray(ordersData) ? ordersData : []);
     } catch (err) {
       setError('Failed to load orders');
-      console.error('Error fetching orders:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'placed':
-        return '#ffc107';
-      case 'preparing':
-        return '#17a2b8';
-      case 'ready':
-        return '#28a745';
-      case 'served':
-        return '#6c757d';
-      case 'cancelled':
-        return '#dc3545';
-      default:
-        return '#6c757d';
-    }
+  const getStatusBadge = (status) => {
+    const s = (status || '').toLowerCase();
+    if (s === 'placed') return 'bg-warning text-dark';
+    if (s === 'preparing') return 'bg-info';
+    if (s === 'ready') return 'bg-primary';
+    if (s === 'served') return 'bg-secondary';
+    if (s === 'cancelled') return 'bg-danger';
+    return 'bg-secondary';
   };
 
-  const getPaymentStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'paid':
-        return '#28a745';
-      case 'pending':
-        return '#ffc107';
-      case 'failed':
-        return '#dc3545';
-      default:
-        return '#6c757d';
-    }
+  const getPaymentBadge = (status) => {
+    const s = (status || '').toLowerCase();
+    if (s === 'paid') return 'bg-success';
+    if (s === 'pending') return 'bg-warning text-dark';
+    if (s === 'failed') return 'bg-danger';
+    return 'bg-secondary';
   };
 
   if (loading) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>Loading your orders...</h2>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>{error}</h2>
-        <button onClick={fetchOrders} style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px' }}>
-          Retry
-        </button>
+      <div className="min-vh-50 d-flex align-items-center justify-content-center py-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>Order History</h1>
-      
-      {orders.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-          <h3 style={{ color: '#666', marginBottom: '20px' }}>No orders found</h3>
-          <p style={{ color: '#666', marginBottom: '20px' }}>You haven't placed any orders yet.</p>
-          <button
-            onClick={() => window.location.href = '/menu'}
-            style={{
-              padding: '12px 24px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontSize: '16px'
-            }}
-          >
-            Browse Menu
-          </button>
+    <>
+      <div
+        className="hero-header hero-page"
+        style={{ backgroundImage: `linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(${PAGE_BG})` }}
+      >
+        <div className="container py-4">
+          <nav className="mb-2">
+            <ol className="breadcrumb mb-0">
+              <li className="breadcrumb-item"><Link to="/" className="text-primary">Home</Link></li>
+              <li className="breadcrumb-item text-white active" aria-current="page">My Orders</li>
+            </ol>
+          </nav>
+          <h1 className="display-6 text-white fw-bold mb-0">My Orders</h1>
+          <p className="text-white-50 mb-0 mt-1">View and track your order history</p>
         </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {orders.map(order => (
-            <div key={order.id} style={{
-              border: '1px solid #ddd',
-              borderRadius: '10px',
-              padding: '20px',
-              backgroundColor: 'white',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
-            }}>
-              {/* Order Header */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '15px',
-                paddingBottom: '15px',
-                borderBottom: '1px solid #eee'
-              }}>
-                <div>
-                  <h3 style={{ margin: '0 0 5px 0', color: '#333' }}>Order #{order.id}</h3>
-                  <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>
-                    {new Date(order.orderDate).toLocaleDateString()} at {new Date(order.orderDate).toLocaleTimeString()}
-                  </p>
-                </div>
-                
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{
-                    display: 'inline-block',
-                    padding: '5px 10px',
-                    borderRadius: '15px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    color: 'white',
-                    backgroundColor: getStatusColor(order.status),
-                    marginBottom: '5px'
-                  }}>
-                    {order.status?.toUpperCase() || 'UNKNOWN'}
-                  </div>
-                  <div style={{
-                    display: 'inline-block',
-                    padding: '5px 10px',
-                    borderRadius: '15px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    color: 'white',
-                    backgroundColor: getPaymentStatusColor(order.paymentStatus),
-                    marginLeft: '5px'
-                  }}>
-                    {order.paymentStatus?.toUpperCase() || 'UNKNOWN'}
-                  </div>
-                </div>
-              </div>
+      </div>
 
-              {/* Order Items */}
-              <div style={{ marginBottom: '15px' }}>
-                <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>Items:</h4>
-                {order.items && order.items.length > 0 ? (
-                  <div style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '5px' }}>
-                    {order.items.map((item, index) => (
-                      <div key={index} style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        marginBottom: '5px',
-                        paddingBottom: '5px',
-                        borderBottom: index < order.items.length - 1 ? '1px solid #ddd' : 'none'
-                      }}>
-                        <span>
-                          {item.name} x{item.quantity}
+      <div className="container py-5">
+        {error && (
+          <div className="alert alert-danger d-flex align-items-center">
+            {error}
+            <button type="button" className="btn-close ms-auto" aria-label="Close" onClick={fetchOrders} />
+          </div>
+        )}
+
+        {orders.length === 0 ? (
+          <div className="card border-0 shadow-sm">
+            <div className="card-body text-center py-5">
+              <h3 className="text-muted">No orders yet</h3>
+              <p className="text-muted mb-4">Place an order from the menu to see it here.</p>
+              <Link to="/menu" className="btn btn-primary">Browse Menu</Link>
+            </div>
+          </div>
+        ) : (
+          <div className="row g-4">
+            {orders.map((order) => (
+              <div key={order.id} className="col-12">
+                <div className="card border-0 shadow-sm">
+                  <div className="card-body">
+                    <div className="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+                      <div>
+                        <h5 className="card-title mb-1">Order #{order.id}</h5>
+                        <p className="text-muted small mb-0">
+                          {order.orderDate
+                            ? new Date(order.orderDate).toLocaleString()
+                            : 'Date not available'}
+                        </p>
+                      </div>
+                      <div className="d-flex gap-2">
+                        <span className={`badge ${getStatusBadge(order.status)}`}>
+                          {order.status?.toUpperCase() || 'N/A'}
                         </span>
-                        <span style={{ fontWeight: 'bold' }}>
-                          ₹{(item.price * item.quantity).toFixed(2)}
+                        <span className={`badge ${getPaymentBadge(order.paymentStatus)}`}>
+                          {order.paymentStatus?.toUpperCase() || 'N/A'}
                         </span>
                       </div>
-                    ))}
+                    </div>
+                    {order.items && order.items.length > 0 && (
+                      <div className="bg-light rounded p-3 mb-3">
+                        {order.items.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="d-flex justify-content-between small"
+                          >
+                            <span>{item.name} x{item.quantity}</span>
+                            <span className="fw-semibold">
+                              Rs {(item.price * item.quantity).toFixed(2)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div className="small">
+                        <span className="fw-semibold">Total: Rs {order.total?.toFixed(2) || '0.00'}</span>
+                        {order.cafeName && (
+                          <span className="text-muted ms-2"> at {order.cafeName}</span>
+                        )}
+                      </div>
+                      <Link to={`/orders/${order.id}`} className="btn btn-outline-primary btn-sm">
+                        View Details
+                      </Link>
+                    </div>
                   </div>
-                ) : (
-                  <p style={{ color: '#666', fontStyle: 'italic' }}>No items details available</p>
-                )}
-              </div>
-
-              {/* Order Summary */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <div>
-                  <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>
-                    <strong>Total Amount:</strong> ₹{order.total?.toFixed(2) || '0.00'}
-                  </p>
-                  {order.cafeName && (
-                    <p style={{ margin: '5px 0 0 0', color: '#666', fontSize: '14px' }}>
-                      <strong>Cafe:</strong> {order.cafeName}
-                    </p>
-                  )}
-                </div>
-                
-                <div style={{ textAlign: 'right' }}>
-                  <button
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: '#007bff',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '5px',
-                      cursor: 'pointer',
-                      fontSize: '14px'
-                    }}
-                    onClick={() => alert(`Order details for Order #${order.id} would be shown here`)}
-                  >
-                    View Details
-                  </button>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

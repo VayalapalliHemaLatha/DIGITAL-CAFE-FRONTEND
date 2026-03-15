@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Navigation from './components/Navigation';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -44,6 +43,7 @@ import MenuPage from './pages/MenuPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
+import CustomerDashboardPage from './pages/CustomerDashboardPage';
 import AdminDashboard from './pages/AdminDashboard';
 import { CartProvider } from './contexts/CartContext';
 import { authApi } from './api';
@@ -60,7 +60,7 @@ function App() {
   return (
     <CartProvider>
       <BrowserRouter>
-        <Navbar isLoggedIn={isLoggedIn} />
+        <Navbar isLoggedIn={isLoggedIn} onAuthChange={onAuthChange} />
         <main>
           <Routes>
             {/* Test route */}
@@ -100,6 +100,7 @@ function App() {
             <Route path="/cafeowner/bookings" element={<CafeOwnerBookingsPage onAuthChange={onAuthChange} />} />
             <Route path="/cafeowner/orders" element={<CafeOwnerOrdersPage onAuthChange={onAuthChange} />} />
             <Route path="/cafeowner/orders/:id" element={<CafeOwnerOrderDetailPage onAuthChange={onAuthChange} />} />
+            <Route path="/customer/dashboard" element={<CustomerDashboardPage onAuthChange={onAuthChange} />} />
             <Route path="/cafes" element={<CafesPage onAuthChange={onAuthChange} />} />
             <Route path="/cafes/:id" element={<CafeDetailPage onAuthChange={onAuthChange} />} />
             <Route path="/bookings" element={<BookingsPage onAuthChange={onAuthChange} />} />

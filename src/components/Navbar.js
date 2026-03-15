@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { authApi } from '../api';
 import { useCart } from '../contexts/CartContext';
 import CreateUserModal from './CreateUserModal';
 
-function Navbar({ isLoggedIn }) {
+function Navbar({ isLoggedIn, onAuthChange }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const user = authApi.getUser();
   const { getTotalItems } = useCart();
   const roleType = (user?.roleType || '').toLowerCase();
@@ -50,9 +51,29 @@ function Navbar({ isLoggedIn }) {
               <li className="nav-item dropdown">
                 <button type="button" className="nav-link dropdown-toggle border-0 bg-transparent text-inherit" id="pagesDropdown" data-bs-toggle="dropdown" aria-expanded="false">Pages</button>
                 <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="pagesDropdown">
-                  <li><Link to="/login" className="dropdown-item">Login</Link></li>
-                  <li><Link to="/register" className="dropdown-item">Sign Up</Link></li>
-                  <li><Link to="/account" className="dropdown-item">Account / Sign out</Link></li>
+                  {isLoggedIn ? (
+                    <>
+                      <li><Link to="/account" className="dropdown-item">Account</Link></li>
+                      <li>
+                        <button
+                          type="button"
+                          className="dropdown-item border-0 bg-transparent w-100 text-start"
+                          onClick={() => {
+                            authApi.logout();
+                            onAuthChange?.();
+                            navigate('/', { replace: true });
+                          }}
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li><Link to="/login" className="dropdown-item">Login</Link></li>
+                      <li><Link to="/register" className="dropdown-item">Sign Up</Link></li>
+                    </>
+                  )}
                 </ul>
               </li>
               <li className="nav-item">
@@ -121,9 +142,10 @@ function Navbar({ isLoggedIn }) {
                       )}
                       {isCustomer && (
                         <>
-                          <li><Link to="/cafes" className="dropdown-item">Cafes</Link></li>
-                          <li><Link to="/bookings" className="dropdown-item">My Bookings</Link></li>
+                          <li><Link to="/customer/dashboard" className="dropdown-item">My Dashboard</Link></li>
                           <li><Link to="/orders" className="dropdown-item">My Orders</Link></li>
+                          <li><Link to="/bookings" className="dropdown-item">My Bookings</Link></li>
+                          <li><Link to="/cafes" className="dropdown-item">Cafes</Link></li>
                         </>
                       )}
                       {isChef && (

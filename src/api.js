@@ -6,6 +6,7 @@ const API_BASE_URL = 'http://localhost:8080';
 const mockData = {
   users: [
     { id: 1, name: 'Hema Latha', email: 'hema@gmail.com', roleType: 'ADMIN', phone: '+1234567890', address: '123 Main St, City', status: 'ACTIVE', avatar: 'https://picsum.photos/seed/hema/50/50.jpg' },
+    { id: 7, name: 'Penki', email: 'penki@gmail.com', roleType: 'CUSTOMER', phone: '', address: '', status: 'ACTIVE', avatar: 'https://picsum.photos/seed/penki/50/50.jpg' },
     { id: 2, name: 'John Smith', email: 'john@example.com', roleType: 'CUSTOMER', phone: '+1234567891', address: '456 Oak Ave, City', status: 'ACTIVE', avatar: 'https://picsum.photos/seed/user1/50/50.jpg' },
     { id: 3, name: 'Sarah Johnson', email: 'sarah@example.com', roleType: 'CUSTOMER', phone: '+1234567892', address: '789 Pine Rd, City', status: 'ACTIVE', avatar: 'https://picsum.photos/seed/user2/50/50.jpg' },
     { id: 4, name: 'Mike Wilson', email: 'mike@example.com', roleType: 'CAFE_OWNER', phone: '+1234567893', address: '321 Elm St, City', status: 'ACTIVE', avatar: 'https://picsum.photos/seed/user3/50/50.jpg' },
@@ -93,40 +94,30 @@ export const authApi = {
       ...(address != null && address !== '' && { address }),
     });
     if (data.token) setToken(data.token);
-    const userObj = data.user ?? { id: data.id, email: data.email, name: data.name, roleType: data.roleType };
+    const userObj = data.user ?? {
+      id: data.userId ?? data.id,
+      email: data.email,
+      name: data.name,
+      roleType: data.roleType ?? 'CUSTOMER',
+    };
     if (userObj && (userObj.id != null || userObj.email)) setUser(userObj);
     return data;
   },
 
   async login({ email, password }) {
-    // Use mock data directly to avoid network errors
-    console.log('Using mock login data');
-    const mockUser = mockData.users.find(u => u.email === email);
-    if (mockUser) {
-      // Accept specific password for admin email hema@gmail.com
-      if (email === 'hema@gmail.com' && password === 'hema123') {
-        const userData = {
-          ...mockUser,
-          token: 'mock-token-' + Date.now()
-        };
-        setToken(userData.token);
-        setUser(userData);
-        return userData;
-      }
-      // Accept standard passwords for other users
-      if (password === 'password' || password === '123456') {
-        const userData = {
-          ...mockUser,
-          token: 'mock-token-' + Date.now()
-        };
-        setToken(userData.token);
-        setUser(userData);
-        return userData;
-      }
-    }
-    return {
-      error: 'Invalid credentials. For admin: hema@gmail.com / hema123, For others: password / 123456'
+    const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+      email,
+      password,
+    });
+    if (data.token) setToken(data.token);
+    const userObj = data.user ?? {
+      id: data.userId ?? data.id,
+      email: data.email,
+      name: data.name,
+      roleType: data.roleType ?? 'CUSTOMER',
     };
+    if (userObj && (userObj.id != null || userObj.email)) setUser(userObj);
+    return data;
   },
 
   async createUser(payload) {
@@ -261,7 +252,8 @@ export async function getAdminBookings(params = {}) {
 export async function getAdminOrders(params = {}) {
   try {
     const { data } = await api.get('/api/admin/orders', { params });
-    return data;
+    const list = Array.isArray(data) ? data : [];
+    return list.length > 0 ? list : mockData.orders;
   } catch (error) {
     console.warn('API unavailable, using mock data');
     return mockData.orders;
@@ -273,20 +265,49 @@ export async function updateCafeOwnerStatus(id, payload) {
   return data;
 }
 
+const mockStaff = [
+  { id: 1, name: 'Waiter One', role: 'WAITER', active: true },
+  { id: 2, name: 'Chef One', role: 'CHEF', active: true },
+];
+
 export async function getCafeOwnerWaiters() {
-  const { data } = await api.get('/api/cafeowners/waiters');
-  return data;
+  try {
+    const { data } = await api.get('/api/cafeowners/waiters');
+    const list = Array.isArray(data) ? data : [];
+    return list.length > 0 ? list : mockStaff.filter(s => (s.role || '').toLowerCase() === 'waiter');
+  } catch (error) {
+    console.warn('API unavailable, using mock data');
+    return mockStaff.filter(s => (s.role || '').toLowerCase() === 'waiter');
+  }
 }
 
 export async function getCafeOwnerChefs() {
-  const { data } = await api.get('/api/cafeowners/chefs');
-  return data;
+  try {
+    const { data } = await api.get('/api/cafeowners/chefs');
+    const list = Array.isArray(data) ? data : [];
+    return list.length > 0 ? list : mockStaff.filter(s => (s.role || '').toLowerCase() === 'chef');
+  } catch (error) {
+    console.warn('API unavailable, using mock data');
+    return mockStaff.filter(s => (s.role || '').toLowerCase() === 'chef');
+  }
 }
+
+const mockCafeOwnerMenu = [
+  { id: 1, name: 'Cappuccino', price: 120, category: 'Coffee' },
+  { id: 2, name: 'Latte', price: 100, category: 'Coffee' },
+  { id: 3, name: 'Croissant', price: 80, category: 'Bakery' },
+];
 
 // Menu (cafe owner)
 export async function getCafeOwnerMenu() {
-  const { data } = await api.get('/api/cafeowners/menu');
-  return data;
+  try {
+    const { data } = await api.get('/api/cafeowners/menu');
+    const list = Array.isArray(data) ? data : [];
+    return list.length > 0 ? list : mockCafeOwnerMenu;
+  } catch (error) {
+    console.warn('API unavailable, using mock menu');
+    return mockCafeOwnerMenu;
+  }
 }
 export async function addCafeOwnerMenuItem(payload) {
   const { data } = await api.post('/api/cafeowners/menu', payload);
@@ -300,10 +321,22 @@ export async function deleteCafeOwnerMenuItem(id) {
   await api.delete(`/api/cafeowners/menu/${id}`);
 }
 
+const mockCafeOwnerTables = [
+  { id: 1, tableNumber: 'T1', capacity: 2, status: 'AVAILABLE' },
+  { id: 2, tableNumber: 'T2', capacity: 4, status: 'OCCUPIED' },
+  { id: 3, tableNumber: 'T3', capacity: 6, status: 'AVAILABLE' },
+];
+
 // Tables (cafe owner)
 export async function getCafeOwnerTables() {
-  const { data } = await api.get('/api/cafeowners/tables');
-  return data;
+  try {
+    const { data } = await api.get('/api/cafeowners/tables');
+    const list = Array.isArray(data) ? data : (data?.tables ?? []);
+    return list.length > 0 ? list : mockCafeOwnerTables;
+  } catch (error) {
+    console.warn('API unavailable, using mock data');
+    return mockCafeOwnerTables;
+  }
 }
 export async function addCafeOwnerTable(payload) {
   const { data } = await api.post('/api/cafeowners/tables', payload);
@@ -322,23 +355,41 @@ export async function deleteCafeOwnerTable(id) {
 }
 
 export async function getCafeOwnerBookings() {
-  const { data } = await api.get('/api/cafeowners/bookings');
-  return data;
+  try {
+    const { data } = await api.get('/api/cafeowners/bookings');
+    const list = Array.isArray(data) ? data : [];
+    return list.length > 0 ? list : mockData.bookings;
+  } catch (error) {
+    console.warn('API unavailable, using mock data');
+    return mockData.bookings;
+  }
 }
 export async function getCafeOwnerOrders() {
-  const { data } = await api.get('/api/cafeowners/orders');
-  return data;
+  try {
+    const { data } = await api.get('/api/cafeowners/orders');
+    const list = Array.isArray(data) ? data : [];
+    return list.length > 0 ? list : mockData.orders;
+  } catch (error) {
+    console.warn('API unavailable, using mock data');
+    return mockData.orders;
+  }
 }
 export async function getCafeOwnerOrderById(id) {
-  const { data } = await api.get(`/api/cafeowners/orders/${id}`);
-  return data;
+  try {
+    const { data } = await api.get(`/api/cafeowners/orders/${id}`);
+    return data;
+  } catch (error) {
+    console.warn('API unavailable, using mock order');
+    return mockData.orders.find(o => o.id === parseInt(id, 10)) || mockData.orders[0];
+  }
 }
 
 // Customer / any authenticated user
 export async function getCafes() {
   try {
     const { data } = await api.get('/api/cafes');
-    return data;
+    const list = Array.isArray(data) ? data : [];
+    return list.length > 0 ? list : mockData.cafes;
   } catch (error) {
     console.warn('API unavailable, using mock data');
     return mockData.cafes;
@@ -365,25 +416,22 @@ export async function createBooking(payload) {
 export async function getBookings() {
   try {
     const { data } = await api.get('/api/bookings');
-    return data;
+    const list = Array.isArray(data) ? data : [];
+    return list.length > 0 ? list : mockData.bookings;
   } catch (error) {
     console.warn('API unavailable, using mock data');
     return mockData.bookings;
   }
 }
 export async function createOrder(payload) {
-  try {
-    const { data } = await api.post('/api/orders', payload);
-    return data;
-  } catch (error) {
-    console.warn('API unavailable, returning mock success');
-    return { success: true, id: Date.now(), ...payload };
-  }
+  const { data } = await api.post('/api/orders', payload);
+  return data;
 }
 export async function getOrders() {
   try {
     const { data } = await api.get('/api/orders');
-    return data;
+    const list = Array.isArray(data) ? data : [];
+    return list.length > 0 ? list : mockData.orders;
   } catch (error) {
     console.warn('API unavailable, using mock data');
     return mockData.orders;
@@ -448,7 +496,7 @@ export async function updateWaiterOrderStatus(id, payload) {
   }
 }
 
-// Payment APIs
+// Payment APIs (legacy amount-based)
 export async function createPaymentOrder(amount) {
   try {
     const { data } = await api.post('/api/payment/create-order', { amount });
@@ -467,6 +515,22 @@ export async function verifyPayment(paymentData) {
     console.error('Payment verification failed:', error);
     throw error;
   }
+}
+
+export async function createOrderFromCart(payload) {
+  const { data } = await api.post('/api/orders/from-cart', payload);
+  return data;
+}
+
+// Order-based Razorpay (backend: create Razorpay order, then verify signature)
+export async function createOrderPayment(orderId) {
+  const { data } = await api.post(`/api/orders/${orderId}/payment/create`);
+  return data;
+}
+
+export async function verifyOrderPayment(orderId, payload) {
+  const { data } = await api.post(`/api/orders/${orderId}/payment/verify`, payload);
+  return data;
 }
 
 // Menu APIs
@@ -519,10 +583,12 @@ export async function getMenu() {
 export async function getCustomerOrders(customerId) {
   try {
     const { data } = await api.get(`/api/orders/customer/${customerId}`);
-    return data;
+    const list = Array.isArray(data) ? data : [];
+    if (list.length > 0) return list;
+    return mockData.orders.filter(order => order.customerId === parseInt(customerId, 10));
   } catch (error) {
     console.warn('API unavailable, using mock customer orders');
-    return mockData.orders.filter(order => order.customerId === parseInt(customerId));
+    return mockData.orders.filter(order => order.customerId === parseInt(customerId, 10));
   }
 }
 

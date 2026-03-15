@@ -79,8 +79,8 @@ function BookingsPage({ onAuthChange }) {
                         <tr key={b.id}>
                           <td>{b.cafeName || `Cafe #${b.cafeId}`}</td>
                           <td>{b.tableNumber || `Table #${b.tableId}`}</td>
-                          <td>{b.bookingDate}</td>
-                          <td>{b.bookingTime}</td>
+                          <td>{b.bookingDate || b.date}</td>
+                          <td>{b.bookingTime || b.time}</td>
                           <td><span className="badge bg-secondary">{b.status || 'booked'}</span></td>
                         </tr>
                       ))}

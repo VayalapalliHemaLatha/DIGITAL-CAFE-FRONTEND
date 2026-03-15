@@ -7,16 +7,16 @@ const MenuPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const { addToCart } = useCart();
+  const { items: cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
 
   useEffect(() => {
-    console.log('MenuPage component mounted');
     fetchMenuItems();
   }, []);
 
   const fetchMenuItems = async () => {
     try {
       setLoading(true);
+      // API: GET /api/menu
       const items = await getMenu();
       setMenuItems(items);
     } catch (err) {
@@ -32,9 +32,9 @@ const MenuPage = () => {
     ? menuItems 
     : menuItems.filter(item => item.category === selectedCategory);
 
-  const handleAddToCart = (item) => {
-    addToCart(item);
-    alert(`${item.name} added to cart!`);
+  const getCartQuantity = (itemId) => {
+    const entry = cartItems.find((c) => c.id === itemId);
+    return entry ? entry.quantity : 0;
   };
 
   if (loading) {
@@ -120,26 +120,87 @@ const MenuPage = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginTop: '15px'
+              marginTop: '15px',
+              flexWrap: 'wrap',
+              gap: '8px'
             }}>
               <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#007bff' }}>
-                ₹{item.price}
+                Rs {item.price}
               </span>
-              
-              <button
-                onClick={() => handleAddToCart(item)}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                Add to Cart
-              </button>
+              {getCartQuantity(item.id) === 0 ? (
+                <button
+                  type="button"
+                  onClick={() => addToCart(item)}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#28a745',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}
+                >
+                  Add to Cart
+                </button>
+              ) : (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  border: '1px solid #dee2e6',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  backgroundColor: '#f8f9fa'
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const q = getCartQuantity(item.id);
+                      if (q <= 1) removeFromCart(item.id);
+                      else updateQuantity(item.id, q - 1);
+                    }}
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      border: 'none',
+                      backgroundColor: '#fff',
+                      cursor: 'pointer',
+                      fontSize: '18px',
+                      lineHeight: 1,
+                      color: '#333'
+                    }}
+                    aria-label="Decrease quantity"
+                  >
+                    -
+                  </button>
+                  <span style={{
+                    minWidth: '36px',
+                    textAlign: 'center',
+                    fontWeight: '600',
+                    fontSize: '15px'
+                  }}>
+                    {getCartQuantity(item.id)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => addToCart(item)}
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      border: 'none',
+                      backgroundColor: '#fff',
+                      cursor: 'pointer',
+                      fontSize: '18px',
+                      lineHeight: 1,
+                      color: '#333'
+                    }}
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ))}

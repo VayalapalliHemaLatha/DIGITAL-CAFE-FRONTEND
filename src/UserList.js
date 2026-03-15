@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { getUsers } from './api';
 import AdminSidebar from './components/AdminSidebar';
 import './styles/AdminDashboard.css';
 

@@ -21,16 +21,5 @@ module.exports = function override(config, env) {
     }
   });
 
-  // Define process.env for browser
-  config.plugins = [
-    ...(config.plugins || []),
-    new (require('webpack')).DefinePlugin({
-      'process.env': JSON.stringify(process.env),
-      'process.browser': JSON.stringify(true),
-      'process.version': JSON.stringify(process.version),
-      'process.versions': JSON.stringify(process.versions),
-    })
-  ];
-  
   return config;
 };

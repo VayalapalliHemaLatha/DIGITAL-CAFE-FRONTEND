@@ -67,12 +67,32 @@ function CafesPage({ onAuthChange }) {
                 <div className="row g-4">
                   {list.map((cafe) => (
                     <div key={cafe.id} className="col-md-6 col-lg-4">
-                      <div className="card h-100">
-                        <div className="card-body">
-                          <h5 className="card-title">{cafe.name}</h5>
-                          {cafe.address && <p className="card-text text-muted small mb-1">{cafe.address}</p>}
-                          {cafe.phone && <p className="card-text text-muted small mb-3">{cafe.phone}</p>}
-                          <Link to={`/cafes/${cafe.id}`} className="btn btn-primary btn-sm">
+                      <div className="card h-100 border-0 shadow-sm overflow-hidden">
+                        {cafe.image && (
+                          <img
+                            src={cafe.image}
+                            alt={cafe.name}
+                            className="card-img-top"
+                            style={{ height: '180px', objectFit: 'cover' }}
+                          />
+                        )}
+                        <div className="card-body d-flex flex-column">
+                          <div className="d-flex justify-content-between align-items-start mb-2">
+                            <h5 className="card-title mb-0">{cafe.name}</h5>
+                            {cafe.rating != null && (
+                              <span className="badge bg-warning text-dark">{cafe.rating}</span>
+                            )}
+                          </div>
+                          {cafe.address && (
+                            <p className="card-text text-muted small mb-1">{cafe.address}</p>
+                          )}
+                          {cafe.phone && (
+                            <p className="card-text text-muted small mb-3">{cafe.phone}</p>
+                          )}
+                          <Link
+                            to={`/cafes/${cafe.id}`}
+                            className="btn btn-primary btn-sm mt-auto align-self-start"
+                          >
                             View menu & book
                           </Link>
                         </div>
