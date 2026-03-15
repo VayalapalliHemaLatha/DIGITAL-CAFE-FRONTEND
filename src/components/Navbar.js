@@ -58,7 +58,9 @@ function Navbar({ isLoggedIn, onAuthChange }) {
                         <button
                           type="button"
                           className="dropdown-item border-0 bg-transparent w-100 text-start"
-                          onClick={() => {
+                          onMouseDown={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
                             if (!window.confirm('Are you sure you want to logout?')) return;
                             clearCart();
                             authApi.logout();
