@@ -13,6 +13,7 @@ function AccountPage({ onAuthChange }) {
   const user = authApi.getUser();
 
   const handleLogout = async () => {
+    if (!window.confirm('Are you sure you want to logout?')) return;
     setLoggingOut(true);
     try {
       clearCart();

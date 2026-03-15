@@ -25,6 +25,7 @@ const Navigation = () => {
   const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
+    if (!window.confirm('Are you sure you want to logout?')) return;
     clearCart();
     authApi.logout();
     window.location.href = '/login';
