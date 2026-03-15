@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { authApi } from '../api';
+import { useCart } from '../contexts/CartContext';
 import CreateUserModal from './CreateUserModal';
 
 function Navbar({ isLoggedIn }) {
   const location = useLocation();
   const user = authApi.getUser();
+  const { getTotalItems } = useCart();
   const roleType = (user?.roleType || '').toLowerCase();
   const isAdmin = roleType === 'admin';
   const isCafeOwner = roleType === 'cafeowner';
@@ -43,7 +45,7 @@ function Navbar({ isLoggedIn }) {
                 <a className="nav-link" href="/#service">Service</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/#menu">Menu</a>
+                <Link to="/menu" className={`nav-link ${location.pathname === '/menu' ? 'active' : ''}`}>Menu</Link>
               </li>
               <li className="nav-item dropdown">
                 <button type="button" className="nav-link dropdown-toggle border-0 bg-transparent text-inherit" id="pagesDropdown" data-bs-toggle="dropdown" aria-expanded="false">Pages</button>
@@ -55,6 +57,16 @@ function Navbar({ isLoggedIn }) {
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="/#contact">Contact</a>
+              </li>
+              {/* Cart Link */}
+              <li className="nav-item">
+                <Link to="/cart" className={`nav-link ${location.pathname === '/cart' ? 'active' : ''}`}>
+                  <i className="fas fa-shopping-cart me-1"></i>
+                  Cart
+                  {getTotalItems() > 0 && (
+                    <span className="badge bg-danger ms-1">{getTotalItems()}</span>
+                  )}
+                </Link>
               </li>
               {isLoggedIn ? (
                 <li className="nav-item" id="profilesection">

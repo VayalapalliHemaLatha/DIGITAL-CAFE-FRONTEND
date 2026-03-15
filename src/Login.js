@@ -1,104 +1,105 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { authApi } from './api';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 
-const Login = ({ onAuthChange }) => {
-    const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+const API_BASE_URL = 'http://localhost:8080';
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name === 'email') setEmail(value);
-        if (name === 'password') setPassword(value);
-        setError('');
-        setSuccess('');
-    };
+function Login({ onAuthChange }) {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setSuccess('');
-        try {
-            const data = await authApi.login({ email, password });
-            setSuccess(`Welcome back, ${data.name ?? data.user?.name ?? data.email ?? email}.`);
-            setEmail('');
-            setPassword('');
-            onAuthChange?.();
-            const role = (data.roleType || data.user?.roleType || '').toLowerCase();
-            if (role === 'admin') {
-              navigate('/admin/dashboard');
-            } else if (role === 'cafeowner') {
-              navigate('/cafeowner/dashboard');
-            } else if (role === 'chef') {
-              navigate('/chef/dashboard');
-            } else if (role === 'waiter') {
-              navigate('/waiter/dashboard');
-            } else {
-              navigate('/cafes');
-            }
-        } catch (err) {
-            const msg = err.response?.data?.message || err.response?.data?.error || err.message || 'Login failed.';
-            setError(msg);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      // Main login endpoint
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+        email,
+        password,
+      });
 
-    return (
-        <>
-            <div className="section-label">Sign In</div>
-            <h3 className="section-title mb-4">Login to your account</h3>
+      const data = response.data; // AuthResponse(token, userId, email, name, roleType)
 
-            {authApi.isLoggedIn() ? (
-                <div className="text-center py-4">
-                    <p className="text-success mb-3">
-                        <i className="fas fa-check-circle me-2"></i>
-                        You are already signed in as <strong>{authApi.getUser()?.name ?? authApi.getUser()?.email ?? 'User'}</strong>
-                    </p>
-                    <p className="text-muted small mb-3">Go to your account to sign out.</p>
-                    <Link to="/account" className="btn btn-primary">
-                        <i className="fas fa-user me-2"></i> Go to Account / Sign out
-                    </Link>
-                </div>
-            ) : (
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label className="form-label">Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            className="form-control"
-                            placeholder="Your Email"
-                            value={email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label className="form-label">Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            className="form-control"
-                            placeholder="Your Password"
-                            value={password}
-                            onChange={handleChange}
-                            required
-                        />
-                        <div className="text-end mt-1">
-                            <Link to="/forgot-password" className="small text-primary">Forgot password?</Link>
-                        </div>
-                    </div>
-                    {error && <div className="alert alert-danger py-2 small">{error}</div>}
-                    {success && <div className="alert alert-success py-2 small">{success}</div>}
-                    <button type="submit" className="btn btn-primary w-100 py-2">
-                        <i className="fas fa-sign-in-alt me-2"></i> Login
-                    </button>
-                </form>
-            )}
-        </>
-    );
-};
+      // Persist auth info
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('email', data.email);
+      localStorage.setItem('name', data.name);
+      localStorage.setItem('role', data.roleType);
+
+      // Let the rest of the app know auth changed
+      onAuthChange?.();
+
+      // Role-based navigation (adapted to your existing routes)
+      switch (data.roleType) {
+        case 'ADMIN':
+          navigate('/admin/dashboard', { replace: true });
+          break;
+        case 'CAFE_OWNER':
+          navigate('/cafeowner/dashboard', { replace: true });
+          break;
+        case 'CHEF':
+          navigate('/chef/dashboard', { replace: true });
+          break;
+        case 'WAITER':
+        case 'STAFF':
+          navigate('/waiter/dashboard', { replace: true });
+          break;
+        default: // CUSTOMER or anything else
+          navigate('/cafes', { replace: true });
+          break;
+      }
+    } catch (err) {
+      const backendMessage =
+        err.response?.data?.message || err.response?.data?.error;
+      setError(backendMessage || 'Invalid email or password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <h2>Digital Cafe Login</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+        <div style={{ marginTop: '4px', marginBottom: '8px', textAlign: 'right' }}>
+          <Link to="/forgot-password" style={{ fontSize: '0.85rem', color: '#2563eb' }}>
+            Forgot password?
+          </Link>
+        </div>
+        {error && (
+          <p style={{ color: 'red', marginTop: '8px' }}>{error}</p>
+        )}
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+      </form>
+    </div>
+  );
+}
 
 export default Login;

@@ -14,8 +14,11 @@ function AdminSidebar() {
         <Link to="/admin/dashboard" className={location.pathname === '/admin/dashboard' ? 'active' : ''}>
           <i className="fas fa-th-large"></i> Dashboard
         </Link>
-        <Link to="/admin/cafeowners" className={location.pathname === '/admin/cafeowners' ? 'active' : ''}>
+        <Link to="/admin/users" className={location.pathname === '/admin/users' ? 'active' : ''}>
           <i className="fas fa-users"></i> User Management
+        </Link>
+        <Link to="/admin/cafeowners" className={location.pathname === '/admin/cafeowners' ? 'active' : ''}>
+          <i className="fas fa-user-tie"></i> Cafe Owners
         </Link>
         <Link to="/admin/cafes" className={location.pathname === '/admin/cafes' ? 'active' : ''}>
           <i className="fas fa-store"></i> Cafe Management

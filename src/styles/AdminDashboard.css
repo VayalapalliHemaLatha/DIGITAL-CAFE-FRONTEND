@@ -224,6 +224,52 @@
 .admin-card-icon.purple { background: #ede9fe; color: #6B46C1; }
 .admin-card-icon.gray { background: #f3f4f6; color: #6b7280; }
 
+/* Enhanced card styles */
+.admin-card.enhanced-card {
+  background: linear-gradient(135deg, #fff 0%, #fafbfc 100%);
+  border: 1px solid #e8eaed;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.admin-card.enhanced-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  border-color: #6B46C1;
+}
+
+.admin-card-trend {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.admin-card-trend.positive {
+  color: #059669;
+}
+
+.admin-card-trend.negative {
+  color: #dc2626;
+}
+
+.admin-card-trend.neutral {
+  color: #6b7280;
+}
+
+.admin-card.enhanced-card .admin-card-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 1.4rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
 /* Chart cards */
 .admin-chart-card {
   background: #fff;
