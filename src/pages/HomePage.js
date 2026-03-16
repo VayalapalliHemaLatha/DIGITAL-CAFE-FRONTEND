@@ -3,15 +3,7 @@ import { Link } from 'react-router-dom';
 import UserList from '../UserList';
 import { authApi } from '../api';
 
-const HERO_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920';
 const ABOUT_BG = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800';
-
-const services = [
-  { icon: 'fa-user-tie', title: 'Master Chefs', text: 'Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam' },
-  { icon: 'fa-utensils', title: 'Quality Food', text: 'Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam' },
-  { icon: 'fa-cart-plus', title: 'Online Order', text: 'Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam' },
-  { icon: 'fa-headset', title: '24/7 Service', text: 'Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam' },
-];
 
 const roleCards = [
   { 

@@ -3,7 +3,7 @@ import WaiterSidebar from '../components/WaiterSidebar';
 import '../styles/ChefWaiterDashboard.css';
 
 function WaiterTablesPage() {
-  const [tables, setTables] = useState([
+  const [tables] = useState([
     { id: 1, name: 'T-1', capacity: 2, status: 'occupied', customer: 'John Doe', orders: 2 },
     { id: 2, name: 'T-2', capacity: 4, status: 'available', customer: '', orders: 0 },
     { id: 3, name: 'T-3', capacity: 2, status: 'cleaning', customer: '', orders: 0 },

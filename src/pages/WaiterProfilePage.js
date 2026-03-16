@@ -30,7 +30,6 @@ function WaiterProfilePage({ onAuthChange }) {
 
   const displayName = profile?.firstName || profile?.name || user?.name || 'Waiter';
   const email = profile?.email || user?.email || '';
-  const initial = (displayName || 'W').charAt(0).toUpperCase();
 
   return (
     <div className="chef-waiter-layout waiter-dashboard">

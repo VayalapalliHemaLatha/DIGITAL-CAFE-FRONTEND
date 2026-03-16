@@ -10,10 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Cell,
   Legend,
-  LineChart,
-  Line
 } from 'recharts';
 import ChefSidebar from '../components/ChefSidebar';
 import '../styles/AdminDashboard.css';

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PaymentSuccess from './PaymentSuccess';
-import { createOrderPayment, verifyOrderPayment } from '../api';
+import { createOrderPayment, resetOrderPayment, verifyOrderPayment } from '../api';
 
 const RazorpayCheckout = ({ orderId, onPaymentComplete }) => {
   const [loading, setLoading] = useState(false);
@@ -59,8 +59,19 @@ const RazorpayCheckout = ({ orderId, onPaymentComplete }) => {
     setPayError('');
     setLoading(true);
     try {
-      // API: POST /api/orders/{orderId}/payment/create (returns keyId, razorpayOrderId, amountPaise, currency, companyName). "Order not found" comes from this if orderId is invalid.
-      const data = await createOrderPayment(orderId);
+      let data;
+      try {
+        data = await createOrderPayment(orderId);
+      } catch (createErr) {
+        const status = createErr.response?.status;
+        const message = (createErr.response?.data?.message || createErr.message || '').toLowerCase();
+        if (status === 400 && (message.includes('already paid') || message.includes('order already paid'))) {
+          await resetOrderPayment(orderId);
+          data = await createOrderPayment(orderId);
+        } else {
+          throw createErr;
+        }
+      }
       const keyId = data.keyId;
       const razorpayOrderId = data.razorpayOrderId;
       const amountPaise = data.amountPaise != null ? Number(data.amountPaise) : Math.max(100, parseInt(paymentData.amount, 10) || 100);
@@ -75,7 +86,6 @@ const RazorpayCheckout = ({ orderId, onPaymentComplete }) => {
         image: 'https://picsum.photos/seed/digitalcafe/100/100.jpg',
         ...(razorpayOrderId ? { order_id: razorpayOrderId } : { amount: amountPaise }),
         handler: function (response) {
-          // API: POST /api/orders/{orderId}/payment/verify (after Razorpay success)
           verifyOrderPayment(orderId, {
             razorpayOrderId: response.razorpay_order_id,
             razorpayPaymentId: response.razorpay_payment_id,

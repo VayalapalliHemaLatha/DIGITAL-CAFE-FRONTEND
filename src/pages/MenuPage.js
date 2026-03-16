@@ -5,7 +5,7 @@ import { useCart } from '../contexts/CartContext';
 const MenuPage = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const { items: cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
 

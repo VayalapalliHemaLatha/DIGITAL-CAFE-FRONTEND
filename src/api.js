@@ -527,9 +527,14 @@ export async function createOrderFromCart(payload) {
   return data;
 }
 
-// Order-based Razorpay (backend: create Razorpay order, then verify signature)
+// Order-based Razorpay: create (no body), reset (for "Order already paid"), verify.
 export async function createOrderPayment(orderId) {
   const { data } = await api.post(`/api/orders/${orderId}/payment/create`);
+  return data;
+}
+
+export async function resetOrderPayment(orderId) {
+  const { data } = await api.post(`/api/orders/${orderId}/payment/reset`);
   return data;
 }
 
@@ -538,10 +543,11 @@ export async function verifyOrderPayment(orderId, payload) {
   return data;
 }
 
-// Menu APIs
-export async function getMenu() {
+// Menu APIs. Optional cafeId: GET /api/menu?cafeId=<id> so items are from one cafe (required for from-cart).
+export async function getMenu(cafeId) {
   try {
-    const { data } = await api.get('/api/menu');
+    const params = cafeId != null ? { cafeId } : {};
+    const { data } = await api.get('/api/menu', { params });
     return data;
   } catch (error) {
     console.warn('API unavailable, using mock menu data');
