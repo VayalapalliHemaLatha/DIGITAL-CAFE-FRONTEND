@@ -16,12 +16,10 @@ const MenuPage = () => {
   const fetchMenuItems = async () => {
     try {
       setLoading(true);
-      // API: GET /api/menu
       const items = await getMenu();
       setMenuItems(items);
     } catch (err) {
       setError('Failed to load menu items');
-      console.error('Error fetching menu:', err);
     } finally {
       setLoading(false);
     }
@@ -37,180 +35,116 @@ const MenuPage = () => {
     return entry ? entry.quantity : 0;
   };
 
-  if (loading) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>Loading menu...</h2>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>{error}</h2>
-        <button onClick={fetchMenuItems} style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px' }}>
-          Retry
-        </button>
-      </div>
-    );
-  }
+  if (loading) return <div className="vh-100 d-flex align-items-center justify-content-center bg-dashboard-canvas"><div className="spinner-border text-primary" role="status"></div></div>;
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>Digital Cafe Menu</h1>
-      
-      {/* Category Filter */}
-      <div style={{ marginBottom: '30px', textAlign: 'center' }}>
-        {categories.map(category => (
-          <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
-            style={{
-              margin: '0 10px',
-              padding: '8px 16px',
-              backgroundColor: selectedCategory === category ? '#007bff' : '#f8f9fa',
-              color: selectedCategory === category ? 'white' : '#333',
-              border: '1px solid #ddd',
-              borderRadius: '20px',
-              cursor: 'pointer'
-            }}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-
-      {/* Menu Items Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-        gap: '20px'
-      }}>
-        {filteredItems.map(item => (
-          <div key={item.id} style={{
-            border: '1px solid #ddd',
-            borderRadius: '10px',
-            padding: '15px',
-            backgroundColor: 'white',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-            transition: 'transform 0.2s'
-          }}>
-            {item.image && (
-              <img
-                src={item.image}
-                alt={item.name}
-                style={{
-                  width: '100%',
-                  height: '150px',
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                  marginBottom: '10px'
-                }}
-              />
-            )}
-            
-            <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>{item.name}</h3>
-            
-            <p style={{ color: '#666', fontSize: '14px', margin: '0 0 10px 0' }}>
-              {item.description}
-            </p>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginTop: '15px',
-              flexWrap: 'wrap',
-              gap: '8px'
-            }}>
-              <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#007bff' }}>
-                Rs {item.price}
-              </span>
-              {getCartQuantity(item.id) === 0 ? (
-                <button
-                  type="button"
-                  onClick={() => addToCart(item)}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#28a745',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '600'
-                  }}
-                >
-                  Add to Cart
-                </button>
-              ) : (
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  border: '1px solid #dee2e6',
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  backgroundColor: '#f8f9fa'
-                }}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const q = getCartQuantity(item.id);
-                      if (q <= 1) removeFromCart(item.id);
-                      else updateQuantity(item.id, q - 1);
-                    }}
-                    style={{
-                      width: '36px',
-                      height: '36px',
-                      border: 'none',
-                      backgroundColor: '#fff',
-                      cursor: 'pointer',
-                      fontSize: '18px',
-                      lineHeight: 1,
-                      color: '#333'
-                    }}
-                    aria-label="Decrease quantity"
-                  >
-                    -
-                  </button>
-                  <span style={{
-                    minWidth: '36px',
-                    textAlign: 'center',
-                    fontWeight: '600',
-                    fontSize: '15px'
-                  }}>
-                    {getCartQuantity(item.id)}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => addToCart(item)}
-                    style={{
-                      width: '36px',
-                      height: '36px',
-                      border: 'none',
-                      backgroundColor: '#fff',
-                      cursor: 'pointer',
-                      fontSize: '18px',
-                      lineHeight: 1,
-                      color: '#333'
-                    }}
-                    aria-label="Increase quantity"
-                  >
-                    +
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filteredItems.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-          <h3>No items found in {selectedCategory} category</h3>
+    <div className="bg-dashboard-canvas min-vh-100 py-5" style={{ isolation: 'isolate' }}>
+      <div className="container py-5">
+        <div className="text-center mb-5">
+          <div className="badge-premium mb-3 mx-auto" style={{ maxWidth: 'fit-content' }}>Our Culinary Universe</div>
+          <h1 className="display-3 fw-bold text-dark mb-4">Digital Cafe <span className="text-primary">Menu</span></h1>
+          <p className="text-muted lead mx-auto" style={{ maxWidth: '700px' }}>
+            Experience the fusion of tradition and innovation. Each dish is a masterpiece, prepared with ingredients sourced from the finest artisans.
+          </p>
         </div>
-      )}
+        
+        {/* Category Filter */}
+        <div className="d-flex justify-content-center flex-wrap gap-2 mb-5">
+          {categories.map(category => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`btn rounded-pill px-4 py-2 transition-all fw-bold ${
+                selectedCategory === category 
+                ? 'btn-primary shadow-lg' 
+                : 'btn-light border text-muted opacity-75'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
+        {/* Menu Items Grid */}
+        <div className="row g-4 justify-content-center">
+          {filteredItems.map(item => (
+            <div key={item.id} className="col-lg-4 col-md-6">
+              <div className="dashboard-glass-card h-100 overflow-hidden border-0">
+                <div className="position-relative">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-100"
+                    style={{ height: '240px', objectFit: 'cover' }}
+                  />
+                  <div className="position-absolute top-0 end-0 m-3">
+                    <div className="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm fw-bold">
+                       Rs {item.price}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-4">
+                  <div className="d-flex justify-content-between align-items-start mb-2">
+                    <h4 className="fw-bold text-dark mb-0">{item.name}</h4>
+                    <div className="text-warning small mt-1">
+                      <i className="fas fa-star"></i> 4.9
+                    </div>
+                  </div>
+                  
+                  <p className="text-muted small mb-4" style={{ minHeight: '40px' }}>
+                    {item.description}
+                  </p>
+                  
+                  <div className="d-flex justify-content-between align-items-center pt-3 border-top">
+                    {getCartQuantity(item.id) === 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => addToCart(item)}
+                        className="btn btn-premium w-100 py-2 fw-bold"
+                      >
+                         Add to Order
+                      </button>
+                    ) : (
+                      <div className="d-flex align-items-center bg-light rounded-pill w-100 justify-content-between p-1 shadow-inner">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const q = getCartQuantity(item.id);
+                            if (q <= 1) removeFromCart(item.id);
+                            else updateQuantity(item.id, q - 1);
+                          }}
+                          className="btn btn-sm btn-white rounded-circle shadow-sm"
+                          style={{ width: '32px', height: '32px' }}
+                        >
+                          <i className="fas fa-minus fs-xs"></i>
+                        </button>
+                        <span className="fw-bold px-3">{getCartQuantity(item.id)} in Cart</span>
+                        <button
+                          type="button"
+                          onClick={() => addToCart(item)}
+                          className="btn btn-sm btn-white rounded-circle shadow-sm"
+                          style={{ width: '32px', height: '32px' }}
+                        >
+                          <i className="fas fa-plus fs-xs"></i>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filteredItems.length === 0 && (
+          <div className="text-center py-5">
+            <i className="fas fa-search-minus display-1 text-muted opacity-25 mb-4"></i>
+            <h3 className="text-muted">No culinary treasures found in "{selectedCategory}"</h3>
+            <button onClick={() => setSelectedCategory('All')} className="btn btn-link text-primary mt-2">View all selections</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

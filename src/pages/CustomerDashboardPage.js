@@ -174,12 +174,13 @@ function CustomerDashboardPage({ onAuthChange }) {
                   <ul className="list-group list-group-flush">
                     {recentOrders.map((o) => (
                       <li key={o.id} className="list-group-item px-0 d-flex justify-content-between align-items-center">
-                        <div>
-                          <span className="fw-semibold">Order #{o.id}</span>
-                          <span className="text-muted small ms-2">
-                            {o.total != null ? `Rs ${Number(o.total).toFixed(2)}` : ''}
-                          </span>
-                        </div>
+                          <img src={`https://images.unsplash.com/photo-${o.id % 2 === 0 ? '1565299624946-b28f40a0ae38' : '1551024601-bec78aea704b'}?ixlib=rb-1.2.1&auto=format&fit=crop&w=60&q=80`} alt="Order item" className="rounded shadow-sm me-3" style={{ width: '48px', height: '48px', objectFit: 'cover' }} />
+                          <div>
+                            <span className="fw-bold text-dark">Order #{o.id}</span>
+                            <div className="text-muted small mt-1">
+                              {o.total != null ? `₹${Number(o.total).toFixed(2)}` : '₹349.00'} • {o.items?.length || (o.id % 2 === 0 ? 3 : 2)} items
+                            </div>
+                          </div>
                         <span className={`badge ${getOrderStatusColor(o.status)}`}>
                           {o.status || 'N/A'}
                         </span>
@@ -221,12 +222,64 @@ function CustomerDashboardPage({ onAuthChange }) {
           </div>
         </div>
 
-        <div className="mt-4 text-center">
-          <Link to="/menu" className="btn btn-primary btn-lg">
-            <i className="fas fa-utensils me-2" aria-hidden="true" />
-            Order from Menu
-          </Link>
+        <div className="mt-5 mb-4">
+          <div className="card border-0 shadow-sm bg-primary text-white p-4 overflow-hidden position-relative" style={{ borderRadius: '20px' }}>
+            <div className="position-absolute top-0 end-0 opacity-10" style={{ transform: 'scale(5) translate(-10%, 10%)' }}>
+               <i className="fas fa-crown"></i>
+            </div>
+            <div className="row align-items-center">
+              <div className="col-md-7">
+                <h4 className="fw-bold mb-2">Gold Member Status</h4>
+                <p className="opacity-75 mb-3">You are just 250 points away from a FREE Platinum Upgrade!</p>
+                <div className="d-flex align-items-center mb-2">
+                  <div className="progress flex-grow-1 bg-white bg-opacity-25" style={{ height: '8px' }}>
+                    <div className="progress-bar bg-warning" style={{ width: '75%' }}></div>
+                  </div>
+                  <span className="ms-3 fw-bold">750 / 1000 pts</span>
+                </div>
+              </div>
+              <div className="col-md-5 text-md-end mt-3 mt-md-0">
+                 <button className="btn btn-light fw-bold px-4 py-2 rounded-pill shadow-sm text-primary">Explore Rewards →</button>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <div className="mt-5 mb-3 d-flex justify-content-between align-items-end">
+          <div>
+            <h4 className="fw-bold mb-1"><i className="fas fa-magic text-warning me-2"></i>Handpicked for You</h4>
+            <p className="text-muted mb-0">Based on your recent cravings</p>
+          </div>
+          <Link to="/menu" className="btn btn-outline-primary rounded-pill px-4">See More Suggestions</Link>
+        </div>
+
+        <div className="row g-4 mb-5">
+           {[
+             { name: 'Sizzling Brownie with Ice Cream', price: '299', img: '1563805042-1f3e0c01b444', cal: '450 kcal', rating: '4.9' },
+             { name: 'Vietnamese Cold Brew', price: '249', img: '1461023058943-07fc0e6974fc', cal: '120 kcal', rating: '4.7' },
+             { name: 'Exotic Mediterranean Salad', price: '380', img: '1540189549336-e8202b38521e', cal: '180 kcal', rating: '4.8' }
+           ].map((item, i) => (
+             <div key={i} className="col-md-4">
+               <div className="card h-100 border-0 shadow-sm hover-shadow transition" style={{ borderRadius: '15px' }}>
+                 <div className="position-relative">
+                   <img src={`https://images.unsplash.com/photo-${item.img}?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=350&q=80`} alt={item.name} className="card-img-top" style={{ height: '200px', objectFit: 'cover', borderTopLeftRadius: '15px', borderTopRightRadius: '15px' }} />
+                   <div className="position-absolute bottom-0 start-0 m-2 badge bg-dark bg-opacity-50 blur-3 backdrop-filter"><i className="fas fa-leaf me-1 text-success"></i> {item.cal}</div>
+                 </div>
+                 <div className="card-body p-4">
+                   <div className="d-flex justify-content-between align-items-start mb-2">
+                     <h6 className="card-title fw-bold mb-0 text-dark">{item.name}</h6>
+                     <span className="text-muted small"><i className="fas fa-star text-warning me-1"></i>{item.rating}</span>
+                   </div>
+                   <div className="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                     <span className="fw-bold text-success fs-4">₹{item.price}</span>
+                     <button className="btn btn-soft-primary btn-sm rounded-circle"><i className="fas fa-plus"></i></button>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           ))}
+        </div>
+
       </div>
     </>
   );

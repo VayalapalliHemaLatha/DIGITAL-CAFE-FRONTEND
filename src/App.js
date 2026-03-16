@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
+import './styles/PremiumTheme.css';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import RegisterPage from './pages/RegisterPage';
@@ -36,6 +37,10 @@ import ChefOrdersPage from './pages/ChefOrdersPage';
 import ChefOrderHistoryPage from './pages/ChefOrderHistoryPage';
 import WaiterDashboardPage from './pages/WaiterDashboardPage';
 import WaiterOrdersPage from './pages/WaiterOrdersPage';
+import WaiterTablesPage from './pages/WaiterTablesPage';
+import WaiterMenuPage from './pages/WaiterMenuPage';
+import WaiterKitchenStatusPage from './pages/WaiterKitchenStatusPage';
+import WaiterReportsPage from './pages/WaiterReportsPage';
 import WaiterProfilePage from './pages/WaiterProfilePage';
 import TestPage from './pages/TestPage';
 // New ordering system pages
@@ -111,6 +116,10 @@ function App() {
             <Route path="/chef/order-history" element={<ChefOrderHistoryPage onAuthChange={onAuthChange} />} />
             <Route path="/waiter/dashboard" element={<WaiterDashboardPage onAuthChange={onAuthChange} />} />
             <Route path="/waiter/orders" element={<WaiterOrdersPage onAuthChange={onAuthChange} />} />
+            <Route path="/waiter/tables" element={<WaiterTablesPage onAuthChange={onAuthChange} />} />
+            <Route path="/waiter/menu" element={<WaiterMenuPage onAuthChange={onAuthChange} />} />
+            <Route path="/waiter/kitchen" element={<WaiterKitchenStatusPage onAuthChange={onAuthChange} />} />
+            <Route path="/waiter/reports" element={<WaiterReportsPage onAuthChange={onAuthChange} />} />
             <Route path="/waiter/profile" element={<WaiterProfilePage onAuthChange={onAuthChange} />} />
           </Routes>
         </main>

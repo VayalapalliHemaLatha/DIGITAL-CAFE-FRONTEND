@@ -22,7 +22,7 @@ function CafeOwnerMenuPage({ onAuthChange }) {
   const [modal, setModal] = useState({ show: false, item: null });
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
-  const [form, setForm] = useState({ name: '', description: '', price: '', category: 'beverage', available: true });
+  const [form, setForm] = useState({ name: '', description: '', price: '', category: 'beverage', image: '', available: true });
 
   const handleAuthFailure = useCallback(() => {
     authApi.setToken(null);
@@ -55,7 +55,7 @@ function CafeOwnerMenuPage({ onAuthChange }) {
   }, [isCafeOwner, navigate, fetchList]);
 
   const openAdd = () => {
-    setForm({ name: '', description: '', price: '', category: 'beverage', available: true });
+    setForm({ name: '', description: '', price: '', category: 'beverage', image: '', available: true });
     setModal({ show: true, item: null });
     setError('');
   };
@@ -65,6 +65,7 @@ function CafeOwnerMenuPage({ onAuthChange }) {
       description: item.description ?? '',
       price: item.price ?? '',
       category: item.category ?? 'beverage',
+      image: item.image ?? '',
       available: item.available !== false,
     });
     setModal({ show: true, item });
@@ -87,6 +88,7 @@ function CafeOwnerMenuPage({ onAuthChange }) {
         description: form.description.trim() || undefined,
         price: priceNum,
         category: form.category,
+        image: form.image.trim() || undefined,
         available: form.available,
       };
       if (modal.item) {
@@ -147,6 +149,7 @@ function CafeOwnerMenuPage({ onAuthChange }) {
                   <table className="table table-hover align-middle mb-0">
                     <thead className="table-light">
                       <tr>
+                        <th>Image</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Price</th>
@@ -158,6 +161,13 @@ function CafeOwnerMenuPage({ onAuthChange }) {
                     <tbody>
                       {list.map((item) => (
                         <tr key={item.id}>
+                          <td>
+                            {item.image ? (
+                              <img src={item.image} alt={item.name} className="rounded" style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
+                            ) : (
+                              <div className="bg-light rounded d-flex align-items-center justify-content-center border" style={{ width: '50px', height: '50px' }}><i className="fas fa-image text-muted"></i></div>
+                            )}
+                          </td>
                           <td className="fw-medium">{item.name}</td>
                           <td className="text-muted small">{item.description || '—'}</td>
                           <td>{typeof item.price === 'number' ? item.price.toFixed(2) : item.price}</td>
@@ -207,13 +217,15 @@ function CafeOwnerMenuPage({ onAuthChange }) {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Description</label>
+                    <label className="form-label">Image URL</label>
                     <input
                       type="text"
                       className="form-control"
-                      value={form.description}
-                      onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
+                      placeholder="https://images.unsplash.com/..."
+                      value={form.image}
+                      onChange={(e) => setForm((p) => ({ ...p, image: e.target.value }))}
                     />
+                    <div className="form-text small text-muted">Provide a valid Unsplash or image URL</div>
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Price <span className="text-danger">*</span></label>

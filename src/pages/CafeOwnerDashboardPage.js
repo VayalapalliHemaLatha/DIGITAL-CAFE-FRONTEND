@@ -136,7 +136,7 @@ function CafeOwnerDashboardPage({ onAuthChange }) {
   if (!isCafeOwner) return null;
 
   return (
-    <div className="admin-layout">
+    <div className="admin-layout bg-dashboard-canvas" style={{ position: 'relative', minHeight: '100vh', isolation: 'isolate' }}>
       <CafeOwnerSidebar cafeName={cafeName} />
 
       <div className="admin-main">
@@ -156,8 +156,9 @@ function CafeOwnerDashboardPage({ onAuthChange }) {
               <i className="fas fa-cog"></i>
             </button>
             <div className="admin-header-user">
-              <i className="fas fa-user-circle fa-2x" style={{ color: '#6B46C1' }}></i>
-              <span>{user?.email ?? 'owner@cafe.com'}</span>
+              <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Owner Avatar" className="rounded-circle me-2" style={{ width: '32px', height: '32px', objectFit: 'cover' }} onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.nextSibling.style.display = 'inline-block'; }} />
+              <i className="fas fa-user-circle fa-2x shadow-sm" style={{ color: '#6B46C1', display: 'none' }}></i>
+              <span className="fw-medium">{user?.email ?? 'owner@cafe.com'}</span>
             </div>
           </div>
         </header>
@@ -309,21 +310,59 @@ function CafeOwnerDashboardPage({ onAuthChange }) {
 
               <div className="row g-3 mt-0">
                 <div className="col-lg-6">
-                  <div className="admin-chart-card">
-                    <h6 className="admin-chart-title">Popular Menu Items</h6>
-                    <p className="admin-chart-subtitle">By order volume</p>
-                    {menu.length === 0 ? (
-                      <p className="text-muted small py-4 mb-0 text-center">No order activity yet</p>
-                    ) : (
-                      <ul className="list-unstyled mb-0">
-                        {menu.slice(0, 5).map((m) => (
-                          <li key={m.id} className="py-2 border-bottom">
-                            <span className="fw-medium">{m.name}</span>
-                            <span className="text-muted small ms-2">₹{Number(m.price || 0).toFixed(2)}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                  <div className="admin-chart-card shadow-sm border-0">
+                    <h6 className="admin-chart-title mb-3 d-flex justify-content-between">
+                      <span><i className="fas fa-comments text-primary me-2"></i>Recent Reviews</span>
+                      <span className="badge bg-soft-primary text-primary px-2">4.8 Avg Rating</span>
+                    </h6>
+                    <div className="list-group list-group-flush mt-2">
+                       {[
+                         { user: 'Alex Johnson', date: '2h ago', rating: 5, text: 'The Truffle Mushroom Burger was exceptional! Fast service too.', avatar: '1500648767791-00dcc994a43e' },
+                         { user: 'Mila Kunis', date: '5h ago', rating: 4, text: 'Love the ambiance and the coffee is perfect. Waiter was very polite.', avatar: '1438761681033-6461ffad8d80' }
+                       ].map((r, i) => (
+                         <div key={i} className="list-group-item px-0 py-3 border-bottom d-flex align-items-start">
+                           <img src={`https://images.unsplash.com/photo-${r.avatar}?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=80&h=80&q=80`} alt="" className="rounded-circle me-3 border shadow-sm" style={{ width: '40px', height: '40px', objectFit: 'cover' }} />
+                           <div className="flex-grow-1">
+                             <div className="d-flex justify-content-between mb-1">
+                               <div className="fw-bold small">{r.user}</div>
+                               <div className="text-muted x-small">{r.date}</div>
+                             </div>
+                             <div className="mb-2">
+                               {[...Array(r.rating)].map((_, i) => <i key={i} className="fas fa-star text-warning" style={{ fontSize: '0.65rem' }}></i>)}
+                             </div>
+                             <p className="text-muted small mb-0 fst-italic">"{r.text}"</p>
+                           </div>
+                         </div>
+                       ))}
+                    </div>
+                    <button className="btn btn-outline-primary btn-sm w-100 mt-3 rounded-pill">View All Feedback</button>
+                  </div>
+                </div>
+
+                <div className="col-lg-12">
+                  <div className="admin-chart-card shadow-sm border-0 mt-3">
+                    <h6 className="admin-chart-title mb-3"><i className="fas fa-boxes text-info me-2"></i>Inventory & Stock Health</h6>
+                    <div className="row g-4">
+                      {[
+                        { name: 'Grains & Bakery', level: 85, color: '#059669', trend: '+12% usage' },
+                        { name: 'Dairy & Cheese', level: 42, color: '#f59e0b', trend: 'Restock needed' },
+                        { name: 'Meat & Poultry', level: 68, color: '#3b82f6', trend: 'Stable' },
+                        { name: 'Beverages', level: 92, color: '#8b5cf6', trend: '+5% sales' }
+                      ].map((s, i) => (
+                        <div key={i} className="col-md-3">
+                          <div className="p-3 border rounded shadow-sm bg-light">
+                            <div className="small fw-bold text-dark mb-2">{s.name}</div>
+                            <div className="d-flex align-items-end mb-1">
+                              <span className="h4 fw-bold mb-0 me-2" style={{ color: s.color }}>{s.level}%</span>
+                              <span className="text-muted x-small mb-1">{s.trend}</span>
+                            </div>
+                            <div className="progress" style={{ height: '6px' }}>
+                              <div className="progress-bar" style={{ width: `${s.level}%`, backgroundColor: s.color }}></div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

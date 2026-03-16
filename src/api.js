@@ -19,9 +19,9 @@ const mockData = {
     { id: 3, name: 'The Daily Grind', address: '789 Pine Road, Midtown', phone: '+1-234-567-8902', email: 'contact@dailygrind.com', status: 'ACTIVE', rating: 4.2, image: 'https://picsum.photos/seed/cafe3/300/200.jpg', ownerName: 'John Smith' },
   ],
   orders: [
-    { id: 1, customerId: 1, customerName: 'John Smith', cafeId: 1, cafeName: 'Coffee Paradise', total: 25.50, status: 'SERVED', paymentStatus: 'PAID', items: [{ name: 'Cappuccino', quantity: 2, price: 4.50 }, { name: 'Croissant', quantity: 1, price: 3.50 }], orderDate: '2024-01-15T10:30:00Z' },
-    { id: 2, customerId: 2, customerName: 'Sarah Johnson', cafeId: 2, cafeName: 'Brew & Bites', total: 18.75, status: 'PREPARING', paymentStatus: 'PAID', items: [{ name: 'Latte', quantity: 1, price: 5.25 }, { name: 'Sandwich', quantity: 1, price: 8.50 }], orderDate: '2024-01-15T11:45:00Z' },
-    { id: 3, customerId: 3, customerName: 'Mike Wilson', cafeId: 3, cafeName: 'The Daily Grind', total: 32.00, status: 'READY', paymentStatus: 'PAID', items: [{ name: 'Espresso', quantity: 3, price: 3.00 }, { name: 'Cake', quantity: 2, price: 6.50 }], orderDate: '2024-01-15T12:15:00Z' },
+    { id: 1, customerId: 1, customerName: 'John Smith', cafeId: 1, cafeName: 'Coffee Paradise', total: 25.50, status: 'SERVED', paymentStatus: 'PAID', items: [{ name: 'Artisan Cappuccino', quantity: 2, price: 4.50, image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=100&fit=crop' }, { name: 'Butter Croissant', quantity: 1, price: 3.50, image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=100&fit=crop' }], orderDate: '2024-01-15T10:30:00Z' },
+    { id: 2, customerId: 2, customerName: 'Sarah Johnson', cafeId: 2, cafeName: 'Brew & Bites', total: 18.75, status: 'PREPARING', paymentStatus: 'PAID', items: [{ name: 'Signature Latte', quantity: 1, price: 5.25, image: 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?w=100&fit=crop' }, { name: 'Pain au Chocolat', quantity: 1, price: 8.50, image: 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=100&fit=crop' }], orderDate: '2024-01-15T11:45:00Z' },
+    { id: 3, customerId: 3, customerName: 'Mike Wilson', cafeId: 3, cafeName: 'The Daily Grind', total: 32.00, status: 'READY', paymentStatus: 'PAID', items: [{ name: 'Double Espresso', quantity: 3, price: 3.00, image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=100&fit=crop' }, { name: 'Berry Sensation Tart', quantity: 2, price: 6.50, image: 'https://images.unsplash.com/photo-1525610553991-2bede1a236e2?w=100&fit=crop' }], orderDate: '2024-01-15T12:15:00Z' },
   ],
   bookings: [
     { id: 1, customerId: 1, customerName: 'John Smith', cafeId: 1, cafeName: 'Coffee Paradise', date: '2024-01-20', time: '14:00', guests: 4, status: 'CONFIRMED', specialRequests: 'Window seat preferred' },
@@ -293,9 +293,14 @@ export async function getCafeOwnerChefs() {
 }
 
 const mockCafeOwnerMenu = [
-  { id: 1, name: 'Cappuccino', price: 120, category: 'Coffee' },
-  { id: 2, name: 'Latte', price: 100, category: 'Coffee' },
-  { id: 3, name: 'Croissant', price: 80, category: 'Bakery' },
+  { id: 1, name: 'Artisan Cappuccino', price: 120, category: 'Coffee', image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&fit=crop' },
+  { id: 2, name: 'Signature Latte', price: 100, category: 'Coffee', image: 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?w=400&fit=crop' },
+  { id: 3, name: 'Turkish Gold Coffee', price: 140, category: 'Coffee', image: 'https://images.unsplash.com/photo-1544145945-f904253db0ad?w=400&fit=crop' },
+  { id: 4, name: 'Artisan Sourdough', price: 180, category: 'Bakery', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&fit=crop' },
+  { id: 5, name: 'Madagascar Creme Brulee', price: 180, category: 'Dessert', image: 'https://images.unsplash.com/photo-1470124118117-0524a29a5fc7?w=400&fit=crop' },
+  { id: 6, name: 'Red Velvet Lava Cake', price: 210, category: 'Dessert', image: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=400&fit=crop' },
+  { id: 7, name: 'Cold Pressed Orange', price: 120, category: 'Beverages', image: 'https://images.unsplash.com/photo-1557800636-894a64c1696f?w=400&fit=crop' },
+  { id: 8, name: 'Blueberry Smoothie Bowl', price: 240, category: 'Beverages', image: 'https://images.unsplash.com/photo-1494597706938-de2cd7341979?w=400&fit=crop' },
 ];
 
 // Menu (cafe owner)
@@ -542,39 +547,39 @@ export async function getMenu() {
     console.warn('API unavailable, using mock menu data');
     return mockData.menu || [
       // Coffee Items
-      { id: 1, name: 'Cappuccino', description: 'Rich espresso with steamed milk foam and chocolate powder', price: 120, category: 'Coffee', image: 'https://picsum.photos/seed/cappuccino-coffee/300/200.jpg' },
-      { id: 2, name: 'Latte', description: 'Smooth espresso with creamy steamed milk', price: 100, category: 'Coffee', image: 'https://picsum.photos/seed/latte-art/300/200.jpg' },
-      { id: 3, name: 'Espresso', description: 'Strong black coffee shot with rich aroma', price: 80, category: 'Coffee', image: 'https://picsum.photos/seed/espresso-shot/300/200.jpg' },
-      { id: 4, name: 'Mocha', description: 'Chocolate espresso with whipped cream', price: 140, category: 'Coffee', image: 'https://picsum.photos/seed/mocha-coffee/300/200.jpg' },
-      { id: 5, name: 'Americano', description: 'Espresso with hot water for smooth taste', price: 90, category: 'Coffee', image: 'https://picsum.photos/seed/americano-coffee/300/200.jpg' },
-      { id: 6, name: 'Macchiato', description: 'Espresso stained with dollop of foam', price: 110, category: 'Coffee', image: 'https://picsum.photos/seed/macchiato-coffee/300/200.jpg' },
+      { id: 1, name: 'Artisan Cappuccino', description: 'Rich espresso with velvet steamed milk foam and cocoa dusting', price: 120, category: 'Coffee', image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=600&fit=crop' },
+      { id: 2, name: 'Signature Latte', description: 'Smooth double-shot espresso with creamy micro-foam', price: 100, category: 'Coffee', image: 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?w=600&fit=crop' },
+      { id: 3, name: 'Double Espresso', description: 'Intense, full-bodied black coffee shot with golden crema', price: 80, category: 'Coffee', image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&fit=crop' },
+      { id: 4, name: 'Turkish Gold Coffee', description: 'Traditional unfiltered coffee with hints of cardamom', price: 140, category: 'Coffee', image: 'https://images.unsplash.com/photo-1544145945-f904253db0ad?w=600&fit=crop' },
+      { id: 5, name: 'Caramel Macchiato', description: 'Espresso marked with vanilla and buttery caramel drizzle', price: 150, category: 'Coffee', image: 'https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=600&fit=crop' },
       
       // Bakery Items
-      { id: 7, name: 'Croissant', description: 'Buttery French pastry with layers', price: 80, category: 'Bakery', image: 'https://picsum.photos/seed/croissant-fresh/300/200.jpg' },
-      { id: 8, name: 'Chocolate Muffin', description: 'Rich chocolate chip muffin', price: 90, category: 'Bakery', image: 'https://picsum.photos/seed/chocolate-muffin/300/200.jpg' },
-      { id: 9, name: 'Blueberry Scone', description: 'Fresh blueberry scone with butter', price: 85, category: 'Bakery', image: 'https://picsum.photos/seed/blueberry-scone/300/200.jpg' },
-      { id: 10, name: 'Cinnamon Roll', description: 'Sweet roll with cinnamon glaze', price: 95, category: 'Bakery', image: 'https://picsum.photos/seed/cinnamon-roll/300/200.jpg' },
-      { id: 11, name: 'Bagel', description: 'Toasted bagel with cream cheese', price: 75, category: 'Bakery', image: 'https://picsum.photos/seed/bagel-creamcheese/300/200.jpg' },
+      { id: 7, name: 'Butter Croissant', description: 'Traditional French layering with high-fat Normandy butter', price: 80, category: 'Bakery', image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&fit=crop' },
+      { id: 8, name: 'Pain au Chocolat', description: 'Flaky pastry filled with premium dark chocolate batons', price: 95, category: 'Bakery', image: 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=600&fit=crop' },
+      { id: 9, name: 'Almond Frangipane', description: 'Twice-baked croissant with almond cream and toasted flakes', price: 110, category: 'Bakery', image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&fit=crop' },
+      { id: 10, name: 'Artisan Sourdough', description: 'Slow-fermented 48-hour loaf with a rich, tangy crust', price: 180, category: 'Bakery', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&fit=crop' },
       
-      // Food Items
-      { id: 12, name: 'Club Sandwich', description: 'Triple layer sandwich with bacon and turkey', price: 180, category: 'Food', image: 'https://picsum.photos/seed/club-sandwich/300/200.jpg' },
-      { id: 13, name: 'Caesar Salad', description: 'Fresh romaine with parmesan and croutons', price: 160, category: 'Food', image: 'https://picsum.photos/seed/caesar-salad/300/200.jpg' },
-      { id: 14, name: 'Grilled Cheese', description: 'Golden grilled cheese sandwich', price: 140, category: 'Food', image: 'https://picsum.photos/seed/grilled-cheese/300/200.jpg' },
-      { id: 15, name: 'Pasta Alfredo', description: 'Creamy fettuccine with parmesan', price: 220, category: 'Food', image: 'https://picsum.photos/seed/pasta-alfredo/300/200.jpg' },
-      { id: 16, name: 'Chicken Wrap', description: 'Grilled chicken with fresh vegetables', price: 190, category: 'Food', image: 'https://picsum.photos/seed/chicken-wrap/300/200.jpg' },
+      // Gourmet Main Food
+      { id: 12, name: 'Seared Lamb Chops', description: 'Herb-crusted lamb served with red wine reduction', price: 450, category: 'Food', image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&fit=crop' },
+      { id: 13, name: 'Wild Sea Bass', description: 'Pan-seared sea bass with lemon butter and asparagus', price: 380, category: 'Food', image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&fit=crop' },
+      { id: 14, name: 'Quinoa Power Bowl', description: 'Organic quinoa with roasted kale, avocado, and tahini', price: 280, category: 'Food', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&fit=crop' },
+      { id: 15, name: 'Wagyu Beef Burger', price: 350, description: 'Premium Wagyu beef on a brioche bun with truffle aioli', category: 'Food', image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&fit=crop' },
+      { id: 16, name: 'Signature Pizza', price: 290, description: 'Neapolitan style with charcoal-blistered crust', category: 'Food', image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&fit=crop' },
       
-      // Desserts
-      { id: 17, name: 'Chocolate Cake', description: 'Decadent three-layer chocolate cake', price: 150, category: 'Dessert', image: 'https://picsum.photos/seed/chocolate-cake/300/200.jpg' },
-      { id: 18, name: 'Tiramisu', description: 'Italian coffee-flavored dessert', price: 170, category: 'Dessert', image: 'https://picsum.photos/seed/tiramisu-dessert/300/200.jpg' },
-      { id: 19, name: 'Cheesecake', description: 'New York style cheesecake with berries', price: 160, category: 'Dessert', image: 'https://picsum.photos/seed/cheesecake-berries/300/200.jpg' },
-      { id: 20, name: 'Ice Cream Sundae', description: 'Vanilla ice cream with toppings', price: 120, category: 'Dessert', image: 'https://picsum.photos/seed/ice-cream-sundae/300/200.jpg' },
-      { id: 21, name: 'Brownie', description: 'Warm chocolate brownie with nuts', price: 100, category: 'Dessert', image: 'https://picsum.photos/seed/chocolate-brownie/300/200.jpg' },
+      // Gourmet Selections
+      { id: 31, name: 'Truffle Lobster Tail', description: 'Butter-poached lobster with shavings of black winter truffle', price: 850, category: 'Gourmet', image: 'https://images.unsplash.com/photo-1553163147-d1643cb1662f?w=600&fit=crop' },
+      { id: 32, name: 'Filet Mignon Rossini', description: 'Center-cut beef topped with foie gras and Madeira sauce', price: 1200, category: 'Gourmet', image: 'https://images.unsplash.com/photo-1546039907-7e0e54ad4581?w=600&fit=crop' },
+      { id: 33, name: 'Herb Crusted Scallops', description: 'Jumbo scallops with salsa verde and cauliflower purée', price: 650, category: 'Gourmet', image: 'https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=600&fit=crop' },
       
-      // Beverages
-      { id: 22, name: 'Fresh Orange Juice', description: 'Freshly squeezed orange juice', price: 80, category: 'Beverages', image: 'https://picsum.photos/seed/orange-juice-fresh/300/200.jpg' },
-      { id: 23, name: 'Green Tea', description: 'Organic green tea with honey', price: 70, category: 'Beverages', image: 'https://picsum.photos/seed/green-tea-honey/300/200.jpg' },
-      { id: 24, name: 'Lemonade', description: 'Fresh homemade lemonade', price: 60, category: 'Beverages', image: 'https://picsum.photos/seed/fresh-lemonade/300/200.jpg' },
-      { id: 25, name: 'Smoothie Bowl', description: 'Mixed berry smoothie with granola', price: 130, category: 'Beverages', image: 'https://picsum.photos/seed/smoothie-bowl/300/200.jpg' }
+      // Decadent Desserts
+      { id: 17, name: 'Madagascar Creme Brulee', description: 'Classic custard with a hand-torched sugar crust', price: 180, category: 'Dessert', image: 'https://images.unsplash.com/photo-1470124118117-0524a29a5fc7?w=600&fit=crop' },
+      { id: 18, name: 'Red Velvet Lava Cake', description: 'Warm velvet cake with a molten chocolate core', price: 210, category: 'Dessert', image: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=600&fit=crop' },
+      { id: 19, name: 'Berry Sensation Tart', description: 'Shortcrust pastry with seasonal berries and vanilla cream', price: 160, category: 'Dessert', image: 'https://images.unsplash.com/photo-1525610553991-2bede1a236e2?w=600&fit=crop' },
+      
+      // Premium Beverages
+      { id: 22, name: 'Cold Pressed Orange', description: '100% pure Valencia oranges squeezed daily', price: 120, category: 'Beverages', image: 'https://images.unsplash.com/photo-1557800636-894a64c1696f?w=600&fit=crop' },
+      { id: 23, name: 'Hibiscus Green Tea', description: 'Organic green tea infused with dried hibiscus petals', price: 90, category: 'Beverages', image: 'https://images.unsplash.com/photo-1523920290228-4f321a939b4c?w=600&fit=crop' },
+      { id: 24, name: 'Blueberry Smoothie Bowl', description: 'Acai base with wild mountain berries and granola', price: 240, category: 'Beverages', image: 'https://images.unsplash.com/photo-1494597706938-de2cd7341979?w=600&fit=crop' }
     ];
   }
 }
